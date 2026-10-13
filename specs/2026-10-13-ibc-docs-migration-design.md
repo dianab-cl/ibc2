@@ -145,6 +145,36 @@ docs already cover the same subjects:
 - `apps/ift/`
 - `cosmos-evm/` (10 files, including the numbered walkthrough)
 
+### ibc-go's own docs are a diverged fork
+
+`cosmos/ibc-go` carries a Docusaurus site at `docs/` (551 files). It is not the
+source for this migration, but it is not fully superseded either.
+
+`cosmos/docs` created `ibc/next/` on 2025-10-29 by importing that tree — the
+numbered image paths it still carries (`/ibc/images/01-ibc/03-apps/...`) are
+fossils of ibc-go's `01-ibc`, `02-apps`, `03-light-clients` layout. The two have
+diverged since:
+
+| Tree | Commits since fork | Nature |
+|---|---|---|
+| ibc-go `docs/docs/` | 4 (2026-02 to 2026-05) | typo fixes, v11 bump, wasmvm bump, upgrade handlers |
+| `cosmos/docs` `ibc/` | 11 (2026-01 to 2026-08) | rate-limit docs, PFM updates, Solidity docs, v11 upgrade guides |
+
+`cosmos/docs` is the base: it holds entire pages ibc-go lacks. But three fixes
+on the ibc-go side never propagated and must be carried across:
+
+- `wasmvm/v2` → `wasmvm/v3` in the wasm integration page. The docs site still
+  names v2, so a reader integrating the wasm light client imports the wrong
+  module version.
+- A sentence in `v10-to-v11`: "If a chain chooses not to integrate the GMP
+  module, it does not need to add the GMP key to the `Added` field."
+- Typo fixes from ibc-go `491c7a366` that landed only there.
+
+The reconciliation is bounded — 4 commits, 13 changed files — and is done by
+reading the hunks rather than by tooling. After it, `cosmos/ibc-go`'s `docs/`
+is superseded and should be retired in a follow-up so a third copy cannot
+re-diverge.
+
 ### Protocol specs are generated, not copied
 
 `cosmos/docs` `ibc/next/spec/` is a stale derived copy of this repo's canonical
@@ -333,6 +363,9 @@ order so the mechanical work can be reviewed independently.
   the cutover PR that deletes the tree from `cosmos/docs`.
 - **Landing page.** `next/intro.mdx` carries a newer card-based design than
   `latest/`. Use the newer one, adjusted for the two-product split.
+- **Retiring ibc-go's `docs/`.** Once reconciled, the Docusaurus site in
+  `cosmos/ibc-go` should be removed or redirected, or it becomes a third copy
+  free to diverge again. Belongs to a follow-up PR in that repository.
 
 ## Evidence
 
