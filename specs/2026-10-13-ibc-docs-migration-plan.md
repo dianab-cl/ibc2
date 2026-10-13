@@ -27,8 +27,8 @@
 1. **`refgen.py` resolving the wrong repo root.** The `dirname` chain fails by computing a wrong path, not by raising. Pinned in Task 3.
 2. **Generator destructiveness and non-idempotence.** `specgen.py` writes a tree; a second run must change nothing, and it must never write outside `docs/ibc/spec/`. Pinned in Task 4.
 3. **Link-rewrite over-matching.** `/ibc/next/` → `/ibc-go/latest/` must not fire inside fenced code blocks or on near-miss prefixes like `/ibc/nextgen`. Pinned in Task 5.
-4. **Dangling canonical URLs.** A frozen `v10.1.x` page whose `canonical:` points at a `latest` path that does not exist sends search engines to a 404. Pinned in Task 6.
-5. **Solidity leaking into `ibc-go/`.** The invariant is asserted once at the end but introduced across three tasks. Pinned in Task 9.
+4. **Dangling canonical URLs.** A frozen `v10.1.x` page whose `canonical:` points at a `latest` path that does not exist sends search engines to a 404. Pinned in Task 6 (frozen-tree import).
+5. **Solidity leaking into `ibc-go/`.** The invariant is asserted once at the end but introduced across three tasks. Pinned in Task 10.
 
 ---
 
@@ -1364,7 +1364,114 @@ in latest, since a canonical pointing at a 404 is worse than none."
 
 ---
 
-### Task 7: Add the navigation drift check
+### Task 7: Reconcile the fixes ibc-go has and the docs site never got
+
+`cosmos/docs` forked ibc-go's Docusaurus docs on 2025-10-29. Four commits landed
+on the ibc-go side afterwards and never propagated. This task carries them
+across. It is small and bounded — 13 changed files — and is done by reading the
+hunks, not by scripted matching.
+
+**Files:**
+- Modify: pages under `docs/ibc-go/latest/` named in the hunks below
+
+**Interfaces:**
+- Consumes: `docs/ibc-go/latest/**` from Task 5; `$IBC_GO`, a checkout of `github.com/cosmos/ibc-go`.
+- Produces: nothing new — corrections in place.
+
+- [ ] **Step 1: Fix the wasmvm version**
+
+The docs site still names `wasmvm/v2`; ibc-go moved to v3 in `e3baed834`
+(2026-05-01). A reader integrating the wasm light client against these docs
+imports the wrong module version.
+
+```bash
+grep -rn 'wasmvm/v2' docs/ibc-go/latest/
+```
+
+Replace each `wasmvm/v2` with `wasmvm/v3`, then confirm against the source:
+
+```bash
+grep -oE 'wasmvm/v[0-9]+' "$IBC_GO/docs/docs/03-light-clients/04-wasm/03-integration.md" | sort -u
+grep -rn 'wasmvm/v2' docs/ibc-go/latest/ || echo "clean"
+```
+
+Expected: the source says `wasmvm/v3`, and the grep reports `clean`.
+
+Leave `docs/ibc-go/v10.1.x/` alone — it is frozen, and v10 genuinely shipped
+against the older wasmvm.
+
+- [ ] **Step 2: Restore the missing GMP sentence in the v10-to-v11 guide**
+
+In `docs/ibc-go/latest/migrations/v10-to-v11.mdx`, add the sentence ibc-go has
+and the docs site lacks, in the section discussing store upgrades and the
+`Added` field:
+
+```
+If a chain chooses not to integrate the GMP module, it does not need to add the GMP key to the `Added` field.
+```
+
+Verify placement against the source:
+
+```bash
+grep -n -B4 -A2 'does not need to add the GMP key'   "$IBC_GO/docs/docs/05-migrations/14-v10-to-v11.md"
+```
+
+- [ ] **Step 3: Review the typo-fix commit hunk by hunk**
+
+```bash
+cd "$IBC_GO" && git show 491c7a366 -- docs/docs
+```
+
+Five files changed. For each hunk, find the counterpart page under
+`docs/ibc-go/latest/` and decide: either the fix is absent and should be
+applied, or the docs site reworded that passage independently and the fix no
+longer applies.
+
+| ibc-go path | `docs/ibc-go/latest/` counterpart |
+|---|---|
+| `00-intro.md` | `intro.mdx` |
+| `01-ibc/03-apps/00-ibcv2apps.md` | `ibc/apps/ibcv2apps.mdx` |
+| `01-ibc/04-middleware/02-developIBCv2.md` | `ibc/middleware/developIBCv2.mdx` |
+| `02-apps/01-transfer/05-events.md` | `apps/transfer/events.mdx` |
+| `02-apps/02-interchain-accounts/04-integration.md` | `apps/interchain-accounts/integration.mdx` |
+
+Do not apply a hunk mechanically. A reworded passage is not a missing fix.
+
+- [ ] **Step 4: Check the two remaining commits for anything substantive**
+
+```bash
+cd "$IBC_GO"
+git show 8539ae3eb -- docs/docs   # v11 bump, sdk.ValidateAuthority
+git show 117bcbbeb -- docs/docs   # v11 upgrade handlers
+```
+
+`ValidateAuthority` is already present on both sides — confirm with
+`grep -c ValidateAuthority docs/ibc-go/latest/ibc/integration.mdx`, expecting a
+non-zero count. For the rest, apply anything the docs site lacks.
+
+- [ ] **Step 5: Verify**
+
+```bash
+cd docs && npx mint broken-links
+```
+
+Expected: zero broken links.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add -A docs/ibc-go/latest/
+git commit -m "docs: carry across the ibc-go fixes the docs site never got
+
+cosmos/docs forked ibc-go's docs on 2025-10-29 and the two diverged. Most
+later work happened on the cosmos/docs side, but a few fixes landed only
+in ibc-go -- notably wasmvm v2 -> v3, which would have had readers
+integrating the wrong module version."
+```
+
+---
+
+### Task 8: Add the navigation drift check
 
 **Files:**
 - Create: `docs/mintlify/scripts/check-nav.js`
@@ -1455,7 +1562,7 @@ a nav entry pointing at a file that moved."
 
 ---
 
-### Task 8: Write the Go-only GMP and attestation pages
+### Task 9: Write the Go-only GMP and attestation pages
 
 The source pages are Solidity-dominant: `gmp.mdx` carries 27 Solidity references against 8 Go. Reuse their structure and protocol narrative; write the implementation detail from `ibc-go` and from `spec/IBC_V2/app/ics-027-gmp/README.md`, which the stale docs copy never had.
 
@@ -1546,7 +1653,7 @@ from the Solidity-dominant originals. EVM detail is linked, not described."
 
 ---
 
-### Task 9: Final verification and handoff
+### Task 10: Final verification and handoff
 
 **Files:**
 - Delete: `docs/scripts/import-ibc-go.py`, `docs/scripts/test-import-ibc-go.py`
@@ -1559,7 +1666,7 @@ from the Solidity-dominant originals. EVM detail is linked, not described."
 
 - [ ] **Step 1: Assert the Solidity invariant across the whole product**
 
-This is Review Focus item 5 — the invariant is introduced across Tasks 5, 6 and 8 but asserted only here.
+This is Review Focus item 5 — the invariant is introduced across Tasks 5, 6 and 9 but asserted only here.
 
 ```bash
 grep -rniE 'solidity|\.sol\b|solidity-ibc-eureka' docs/ibc-go/ \
@@ -1692,8 +1799,8 @@ follow-up — see \`docs/mintlify/DEPLOYMENT.md\`."
 
 ## Notes for the executor
 
-**`$COSMOS_DOCS`** must point at a local checkout of `github.com/cosmos/docs` throughout Tasks 1, 5 and 6. Export it once at the start.
+**`$COSMOS_DOCS`** must point at a local checkout of `github.com/cosmos/docs` (Tasks 1, 5, 6) and **`$IBC_GO`** at one of `github.com/cosmos/ibc-go` (Task 7). Export both at the start.
 
 **File counts in this plan are measurements, not estimates**, taken 2026-10-13 against `cosmos/docs` at its then-current `main` and `cosmos/ibc` at `c60e3414`. If a count comes out materially different, the source moved — stop and reconcile rather than adjusting the number.
 
-**Three tasks have no unit tests and rely on verification commands instead**: Task 1 (configuration), Task 2 (content conversion) and Task 8 (prose). Their gates are `mint validate`, `mint broken-links`, `check-nav.js` and the Solidity grep. Treat a failing gate as a failing test.
+**Four tasks have no unit tests and rely on verification commands instead**: Task 1 (configuration), Task 2 (content conversion), Task 7 (reconciliation) and Task 9 (prose). Their gates are `mint validate`, `mint broken-links`, `check-nav.js` and the Solidity grep. Treat a failing gate as a failing test.

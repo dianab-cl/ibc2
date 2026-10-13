@@ -302,18 +302,24 @@ This follows the existing `cli/AGENTS.md` and `cli/CLAUDE.md` pattern.
 
 ## Delivery
 
-One pull request, built as five sequential commits so review and revert can
+One pull request, built as ten sequential commits so review and revert can
 operate per step:
 
-1. **Scaffold** — `docs.json`, `package.json`, `style.css`, snippets, assets,
-   CI workflow, `.licenserc.yaml` fix, refgen move and path fixes, both
-   `AGENTS.md` files. `mint dev` runs.
-2. **Monorepo docs** — 36 `.md` → `.mdx` under `docs/ibc/`, nav wired.
-3. **ibc-go `latest`** — scripted import, Solidity strip, link and image path
+1. **Scaffold** — `docs.json`, `package.json`, brand assets, CI workflow,
+   `.licenserc.yaml` fix, `docs/AGENTS.md`.
+2. **Monorepo docs** — 26 `.md` → `.mdx` under `docs/ibc/`, nav wired.
+3. **refgen** — relocate to `docs/scripts/`, fix the root resolution, repoint at
+   the moved pages, add the `--check` gate to CI.
+4. **Specs** — `specgen.py`, its tests, the generated `docs/ibc/spec/` tree.
+5. **ibc-go `latest`** — scripted import, Solidity strip, link and image path
    rewrites.
-4. **ibc-go `v10.1.x`** — frozen import, `noindex`/`canonical` stamping,
+6. **ibc-go `v10.1.x`** — frozen import, canonical stamping and its check,
    versioning scripts.
-5. **GMP and attestation** — the two Go-only rewrites.
+7. **Reconciliation** — the ibc-go fixes that never reached the docs site.
+8. **Navigation drift check**.
+9. **GMP and attestation** — the two Go-only rewrites.
+10. **Verification and handoff** — invariant assertion, importer removal,
+    deployment checklist.
 
 The import is scripted rather than hand-copied so it can be re-run if
 `cosmos/docs` changes before merge.
