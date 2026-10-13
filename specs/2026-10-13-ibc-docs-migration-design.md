@@ -116,10 +116,14 @@ archived versions point search engines back at it.
 | `docs/ibc-go/v10.1.x/**` | `cosmos/docs` `ibc/v10.1.x/` (189 files) | copied; stamped `noindex` + `canonical` |
 | `docs/ibc-go/latest/apps/gmp.mdx` | `ibc/next/apps/gmp/gmp.mdx` | rewritten Go-only |
 | `docs/ibc-go/latest/light-clients/attestation/` | `ibc/next/light-clients/attestation/` | rewritten Go-only |
-| `docs/mintlify/images/` | `cosmos/docs` `ibc/images/` (49 files, 7MB) | pruned to referenced files; deduped across `latest` and `v10.1.x` |
-| `docs/mintlify/snippets/` | `cosmos/docs` `snippets/` (14 files) | pruned to components IBC pages reference |
+| `docs/ibc/spec/**` | this repo's `spec/` (46 `.md`) | **generated** by `docs/scripts/specgen.py`; not copied |
+| `docs/mintlify/images/` | `cosmos/docs` `ibc/images/` (49 files, 7MB) | pruned to the 13 referenced files |
 
-Approximately 450 files total.
+`snippets/` is not carried. Measurement shows `ibc/next/` contains zero snippet
+imports — the only `import` statements in the tree are Go code inside fenced
+blocks.
+
+Approximately 400 files total.
 
 ### File naming
 
@@ -140,6 +144,37 @@ docs already cover the same subjects:
 - `learn/`
 - `apps/ift/`
 - `cosmos-evm/` (10 files, including the numbered walkthrough)
+
+### Protocol specs are generated, not copied
+
+`cosmos/docs` `ibc/next/spec/` is a stale derived copy of this repo's canonical
+`spec/`. A diff of `ics-004/README` shows the only differences are mechanical:
+`.md` stripped from internal links, and image paths absolutized. The prose is
+identical. The copy was last modified 2026-04-09 and holds 41 files against the
+repo's 46; among the files it lacks is `IBC_V2/app/ics-027-gmp/README.md`, the
+GMP specification.
+
+Importing that copy would commit a stale duplicate of `spec/` into the repository
+that owns `spec/`. Instead, `docs/scripts/specgen.py` generates
+`docs/ibc/spec/**` from `spec/**`, following the same generate-and-check pattern
+as `refgen.py`. CI runs it in `--check` mode so the published specs cannot drift
+from the canonical source.
+
+The transform is narrow, because the source files already carry ICS frontmatter
+including `title`:
+
+1. `.md` → `.mdx`.
+2. Strip the `.md` suffix from internal links (`./UPGRADES.md` → `./UPGRADES`).
+3. Rewrite relative image paths to absolute site paths
+   (`dataflow.png` → `/ibc/spec/core/ics-004-channel-and-packet-semantics/dataflow.png`).
+4. Copy image files alongside.
+
+Four governance files are excluded from publication: `CONTRIBUTING.md`,
+`PROCESS.md`, `STANDARDS_COMMITTEE.md`, `ics-template.md`.
+
+`spec/` itself is untouched. It remains the canonical source, keeps its own
+license trajectory under `.licenserc.yaml`, and `spec.yml` CI continues to run
+against it unchanged.
 
 ### Go-only rewrites
 
@@ -264,6 +299,8 @@ The import is scripted rather than hand-copied so it can be re-run if
   every nav entry resolves to a file.
 - `license-headers.yml`, `pr-lint.yml` and the rest of existing CI pass.
 - `python3 docs/scripts/refgen.py all --check` passes from the new location.
+- `python3 docs/scripts/specgen.py --check` passes, and `docs/ibc/spec/` contains
+  42 pages including `IBC_V2/app/ics-027-gmp`.
 - Every page in `docs/ibc-go/v10.1.x/` carries `noindex: true` and a `canonical:`
   pointing at its `latest` equivalent.
 
