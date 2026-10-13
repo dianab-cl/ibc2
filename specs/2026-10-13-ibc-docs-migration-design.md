@@ -80,6 +80,23 @@ that is absent from `next/`.
 The model is therefore `latest` plus tagged snapshots. Unreleased features are
 documented in `latest` with a version callout.
 
+#### Standing the tier up later
+
+The decision not to ship `next/` is reversible and deliberately cheap. Should a
+release cycle need it:
+
+1. `node docs/mintlify/scripts/sync-latest-to-next.js` to populate
+   `docs/ibc-go/next/` from `latest/`.
+2. Add the `next` entry to `docs.json` nav and `versions.json`.
+3. Add `noindex: true` to the new tree's frontmatter.
+4. Restore the `next/` → `latest/` step in `version-manager.js`'s freeze path.
+
+Until then, unreleased docs are readable locally with `npx mint dev`. Sharing
+them with reviewers who will not run a dev server requires either this tier or
+Mintlify preview deployments, which need a Pro or Enterprise plan, do not cover
+pull requests opened from forks, and are publicly reachable unless the
+Enterprise access add-on is enabled.
+
 ### Freeze procedure
 
 Cutting `vX.Y.x` copies `ibc-go/latest/` to `ibc-go/vX.Y.x/`, stamps the copy
@@ -148,6 +165,8 @@ Ported to `docs/mintlify/scripts/`:
 - `tag-archived.js` — stamps `noindex` + `canonical` on frozen trees
 - `check-github-refs.js` and its test suite — catches rotted GitHub permalinks
 - `verify-links-live.js`
+- `sync-latest-to-next.js` — unused at ship time; carried so the `next/` tier
+  can be stood up later without re-deriving it
 - link validation
 
 Not ported — `cosmos/docs`-wide concerns with no counterpart here:
@@ -270,6 +289,9 @@ order so the mechanical work can be reviewed independently.
 
 - **Deployment.** Who creates the Mintlify project, and which domain. Requires
   dashboard access. A handoff checklist is a deliverable of this work.
+- **Plan tier.** `cosmos/ibc` would be a new Mintlify project rather than a reuse
+  of the cosmos/docs one. Preview deployments require Pro or Enterprise; whether
+  that is available decides how unreleased and in-review docs get shared.
 - **Redirects.** The `/ibc/next/*` and `/ibc/latest/*` → new-URL map belongs to
   the cutover PR that deletes the tree from `cosmos/docs`.
 - **Landing page.** `next/intro.mdx` carries a newer card-based design than
