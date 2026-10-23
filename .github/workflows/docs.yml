@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: Apache-2.0
+
+name: docs
+on:
+  pull_request:
+    # cli/, proto/ and gen/ are here because the generators job below checks the
+    # reference tables against that code. Without them a code-only pull request
+    # never runs the check that exists to catch exactly that drift.
+    paths: ["docs/**", "spec/**", "cli/**", "proto/**", "gen/**"]
+  push:
+    branches: [main]
+    paths: ["docs/**", "spec/**", "cli/**", "proto/**", "gen/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+      # Before broken-links so a parse failure reports first. validate is the
+      # gate that rejects invalid MDX (HTML comments, bare <https://...>
+      # autolinks, prose like <a,b> read as a JSX tag); broken-links does not.
+      - name: Validate the documentation build
+        working-directory: docs
+        run: npx --yes mint@4 validate
+      - name: Check for broken links
+        working-directory: docs
+        run: npx --yes mint@4 broken-links
+
+  generators:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      # refgen builds the CLI and reads the proto schema through buf, so the
+      # job needs both toolchains and not Python alone.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version-file: cli/go.mod
+          cache-dependency-path: |
+            cli/go.sum
+            gen/go/solidity-abi/go.sum
+      - uses: bufbuild/buf-action@8c6a16e16f12ba20b6470afa9c2ba9b5ba8c97c3 # v1
+        with:
+          setup_only: true
+          version: "1.70.0"
+      - name: CLI reference tables match the code
+        run: python3 docs/scripts/refgen.py all --check
+      - name: refgen unit tests
+        run: python3 docs/scripts/test-refgen.py
+      - name: Published specs match spec/
+        run: python3 docs/scripts/specgen.py --check
+      - name: specgen unit tests
+        run: python3 docs/scripts/test-specgen.py
+      - name: Frozen versions carry resolvable canonicals
+        run: node docs/mintlify/scripts/check-canonicals.js
+      - name: Versioning script unit tests
+        run: node docs/mintlify/scripts/check-github-refs.test.js
+      - name: Navigation matches the file tree
+        run: node docs/mintlify/scripts/check-nav.js

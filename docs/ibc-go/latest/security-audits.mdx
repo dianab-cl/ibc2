@@ -1,0 +1,260 @@
+---
+title: "Security Audits"
+description: "Independent security audit reports for the IBC protocol and its implementations"
+---
+
+## Overview
+
+IBC has undergone multiple independent security audits by blockchain security firms. The audits cover the protocol itself and its implementations in Go, Solidity, and Rust, along with the application modules and light clients built on top of them. Each report is an independent assessment of code quality, potential vulnerabilities, and architectural design.
+
+Reports are published in the repository they apply to: [cosmos/ibc-go](https://github.com/cosmos/ibc-go/tree/main/docs/audits) for the Go implementation, and [cosmos/ibc-contracts](https://github.com/cosmos/ibc-contracts/tree/main/docs/audits) for the Solidity and Solana implementations.
+
+## Protocol
+
+### IBC v2
+
+- Auditor: Sherlock
+- Audit period: February to March 2025
+- Report date: April 2025
+- Pages: 74
+- Audited commit: `79218a531e769bb5c29022d50ef017bd81e4bd9b`
+- Final commit: `d316a8b6c3716bad1bc2b1e8a3f573a7144dfc2d`
+
+A collaborative audit of the IBC v2 protocol implementation, which simplifies IBC by removing channel and connection handshakes, minimizing the application interface, and enabling connectivity with new domains such as Ethereum while remaining backward compatible with existing IBC channels.
+
+<Card
+  title="IBC v2 Protocol Audit Report"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-go/blob/main/docs/audits/IBC-v2/IBC-v2-April-2025-Collaborative-Audit-Report.pdf"
+>
+  Complete security assessment of the IBC v2 protocol implementation (74 pages)
+</Card>
+
+## Go implementation
+
+Audits of [ibc-go](https://github.com/cosmos/ibc-go), the Go implementation of IBC used by Cosmos SDK chains.
+
+### GMP and Attestation Light Client
+
+- Auditor: Zellic
+- Review period: February 2026
+- Report date: February 26, 2026
+- Pages: 53
+- Audited commit: `9ffc7482390229a84ca982d6af596689a1686756`
+
+Covers the ICS-27 GMP module, including its keeper, message and query servers, packet relay, and derived account handling, together with the attestations light client.
+
+<Card
+  title="GMP and Attestation Light Client Audit"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-go/blob/main/docs/audits/27-gmp-and-attestation/IBC-Go%20GMP%20Module%20and%20Attestations%20Light%20Client%20-%20Zellic%20Audit%20Report.pdf"
+>
+  Zellic assessment of the GMP module and attestations light client (53 pages)
+</Card>
+
+### ICS-20 Token Transfer v2
+
+- Auditor: Atredis Partners
+- Report date: September 2024
+- Pages: 41
+
+Covers multi-denomination support, memo field enhancements, forwarding middleware, and path unwinding.
+
+<Card
+  title="ICS-20 v2 Audit Report"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-go/blob/main/docs/audits/20-token-transfer/Atredis%20Partners%20-%20Interchain%20ICS20%20v2%20New%20Features%20Assessment%20-%20Report%20v1.0.pdf"
+>
+  Security assessment of ICS-20 v2 token transfer features (41 pages)
+</Card>
+
+### Channel Upgrades
+
+- Auditor: Atredis Partners
+- Testing period: January to February 2024
+- Report date: March 2024
+- Pages: 38
+
+Covers channel upgrade handshakes, timeout mechanisms, state machine verification, and upgrade cancellation logic.
+
+<Card
+  title="Channel Upgrades Audit Report"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-go/blob/main/docs/audits/04-channel-upgrades/Atredis%20Partners%20-%20Interchain%20Foundation%20IBC-Go%20Channel%20Upgrade%20Feature%20Assessment%20-%20Report%20v1.1.pdf"
+>
+  Assessment of IBC channel upgrade functionality (38 pages)
+</Card>
+
+### 08-wasm Light Client
+
+Two reviews are available for the WASM light client.
+
+#### Halborn security audit
+
+- Auditor: Halborn
+- Engagement period: February 2023
+- Pages: 55
+
+<Card
+  title="WASM Client Halborn Audit"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-go/blob/main/docs/audits/08-wasm/Halborn%20audit%20report.pdf"
+>
+  Halborn security assessment of the WASM light client (55 pages)
+</Card>
+
+#### Ethan Frey review
+
+- Reviewer: Ethan Frey
+- Type: Technical review
+
+A review of the WASM client architecture and implementation.
+
+<Card
+  title="WASM Client Technical Review"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-go/blob/main/docs/audits/08-wasm/Ethan%20Frey%20-%20Wasm%20Client%20Review.pdf"
+>
+  Technical review of the WASM client implementation
+</Card>
+
+### Interchain Accounts (ICS-27)
+
+- Auditor: Trail of Bits
+- Report date: December 2021
+- Pages: 42
+
+Covers controller and host chain implementations, authentication mechanisms, message routing and execution, and security boundaries and access controls.
+
+<Card
+  title="Interchain Accounts Audit"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-go/blob/main/docs/audits/27-interchain-accounts/Trail%20of%20Bits%20audit%20-%20Final%20Report.pdf"
+>
+  Trail of Bits assessment of Interchain Accounts (42 pages)
+</Card>
+
+## Solidity and Ethereum light client
+
+Audits of the Solidity contracts and the Ethereum light client in [ibc-contracts](https://github.com/cosmos/ibc-contracts).
+
+### Solidity GMP, IFT, and attestation light client
+
+- Auditor: Zellic
+- Review period: March 2026
+- Report date: March 5, 2026
+- Pages: 79
+- Audited commit: `9798e644ed8624d081afe417eb55b401018cd38d`
+
+Covers `ICS27GMP.sol`, `ICS26Router.sol`, `ICS20Transfer.sol`, the Interchain Fungible Token base and ownership contracts, the ICS-27 account and callback libraries, and the attestation light client.
+
+<Card
+  title="Solidity GMP, IFT, and Attestation Audit"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-contracts/blob/main/docs/audits/2026-03-zellic.pdf"
+>
+  Zellic assessment of the Solidity GMP, IFT, and attestation light client contracts (79 pages)
+</Card>
+
+### Solidity contracts and Ethereum light client
+
+- Auditor: Zellic
+- Review period: March 2025
+- Report date: March 25, 2025
+- Pages: 37
+- Audited commit: `6bb8fcf6af5094487c85f12d9398c8401fd4a1b7`
+
+Covers the Solidity contracts, the Ethereum light client and trie database, the SP1 ICS-07 Tendermint prover, the `cw-ics08-wasm-eth` CosmWasm client, and the SP1 programs. The engagement also reviewed the `EurekaHandler` contract in `skip-mev/skip-go-evm-contracts`.
+
+<Card
+  title="Solidity and Ethereum Light Client Audit"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-contracts/blob/main/docs/audits/2025-03-25-zellic.pdf"
+>
+  Zellic assessment of the Solidity contracts and Ethereum light client (37 pages)
+</Card>
+
+## Solana implementation
+
+Audits of the Solana programs in [ibc-contracts](https://github.com/cosmos/ibc-contracts).
+
+### Solana programs
+
+- Auditor: Zenith
+- Audit period: February to March 2026
+- Report date: April 2026
+- Pages: 62
+- Audited commit: `5560586d241a7e33f2359bdd0bed4403cee34ce5`
+- Mitigation review commit: `3b594aab7d17dcf5f1afe088a5ae8d95de695d7d`
+
+Covers the ICS-26 router, the ICS-27 GMP application, the Interchain Fungible Token (IFT) program, the attestation light client, the access manager, and the Solana Tendermint light client. The engagement included a mitigation review of the fixes.
+
+<Card
+  title="Solana Programs Audit"
+  icon="file-pdf"
+  href="https://github.com/cosmos/ibc-contracts/blob/main/docs/audits/2026-02-20-zenith.pdf"
+>
+  Zenith assessment of the IBC Solana programs (62 pages)
+</Card>
+
+## Key security areas
+
+These audits collectively cover:
+
+### Protocol security
+
+- Core IBC protocol mechanics
+- Handshake protocols and state machines
+- Timeout and error handling
+- Proof verification systems
+
+### Feature security
+
+- Token transfer mechanisms, both lock-and-mint and mint-and-burn
+- General message passing and cross-chain contract execution
+- Cross-chain account control
+- Light client implementations, including consensus, attestation, and ZK clients
+- Channel upgrade procedures
+
+### Implementation security
+
+- Memory safety and resource management
+- Cryptographic operations
+- State consistency guarantees
+- Access control and permissions
+
+## Recommendations for developers
+
+When building with IBC:
+
+1. Review the audit reports that cover the features you are implementing
+2. Adopt the security practices the audits recommend
+3. Include security testing based on audit findings
+4. Monitor security advisories and updates for the implementation you depend on
+5. Follow responsible disclosure practices when reporting vulnerabilities
+
+## Continuous security
+
+IBC maintainers sustain an ongoing commitment to security through:
+
+- Regular audits of new features and major releases
+- Rapid response to security disclosures
+- Transparent communication via security advisories
+- Active collaboration with security researchers
+- Continuous improvement based on audit findings
+
+Vulnerabilities identified through audits and the bug bounty program are resolved through coordinated private disclosure.
+
+## Security disclosure
+
+To report a potential vulnerability, follow the security policy for the affected repository:
+
+- [ibc-go security policy](https://github.com/cosmos/ibc-go/security/policy)
+- [ibc-contracts security policy](https://github.com/cosmos/ibc-contracts/security/policy)
+
+## Additional resources
+
+- [IBC protocol specification](https://github.com/cosmos/ibc)
+- [ibc-go repository](https://github.com/cosmos/ibc-go)
+- [ibc-contracts repository](https://github.com/cosmos/ibc-contracts)
+- [Security best practices](/ibc-go/latest/ibc/best-practices)
