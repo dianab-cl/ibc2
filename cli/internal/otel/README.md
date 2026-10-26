@@ -78,7 +78,8 @@ Shared label: `{otel_scope_name="ibc.relayer"}`
 In metrics that label both packet sides, `chain_id` / `client_id` refer to the packet's **source** side and
 `dest_chain_id` / `dest_client_id` to its destination.
 
-Confirmations count only successful receipts for transactions broadcast by this process and are deduplicated in memory by chain and tx hash.
+Confirmations count only successful receipts for transactions broadcast by this process.
+Confirmations and retries are deduplicated independently in a cache of 10,000 transactions by chain and tx hash.
 Completions and durations are recorded only on success (`CompleteWithAck`, `CompleteWithTimeout`).
 EVM wallet balances are queried concurrently at the latest block, at most once every 10 seconds per wallet.
 Collections inside that threshold re-emit the last observed value. A failed query is logged and reported as `-1`.
@@ -92,9 +93,13 @@ Collections inside that threshold re-emit the last observed value. A failed quer
 | processors  | `transactions_submitted_total`  | counter            | `chain_id`, `client_id`                                             | +1 per successful broadcast                                    |
 | processors  | `transactions_confirmed_total`  | counter            | `chain_id`, `client_id`                                             | +1 per successful receipt                                      |
 | processors  | `transaction_retries_total`     | counter            | `chain_id`, `dest_chain_id`, `client_id`, `dest_client_id`, `type`  | +1 per submitted transaction retried                           |
+| processors | `relay_packet_execution_total` | counter | `chain_id`, `dest_chain_id`, `client_id`, `dest_client_id`, `processor`, `result` | Observed packet execution attempts; `result`: `executed`, `missing_event`, `tx_reverted` |
+| txsubmitter | `txsubmitter_attempts_total` | counter | `chain_id`, `wallet`, `result` | +1 per completed Submit call; `result`: `ok`, `deferred` (capacity), `error`. Internal fee replacements do not add attempts. |
 | txsubmitter | `evm_gas_spent`                 | observable counter | `chain_id`, `wallet`                                                | Cumulative mined cost of txs this submitter sent, including failed txs, in native-token units |
 | txsubmitter | `evm_gas_balance`               | observable gauge   | `chain_id`, `wallet`                                                | Latest EVM wallet balance in native-token units; `-1` on error |
 | watcher     | `watcher_events_total`          | counter            | `chain_id`, `type` (`send_packet`)                                  | Observed send-packet events                                    |
+| watcher | `watcher_subscription_up` | gauge | `chain_id` | 1 while subscribed; 0 before the initial subscription, during reconnection, and after shutdown. Only configured auto-relay watchers emit it. |
+| dispatch | `dispatcher_last_success_timestamp_seconds` | gauge | none | Unix timestamp of the last completed successful poll, including empty polls. Initially 0; errors and blocked polls leave it unchanged. |
 | dispatch    | `packets_pending`               | gauge              | `chain_id`, `dest_chain_id`, `client_id`, `dest_client_id`          | Pending packets per route                                      |
 | dispatch    | `excessive_relay_latency_total` | counter            | `chain_id`, `dest_chain_id`, `client_id`, `dest_client_id`, `type`  | +1 per poll while a packet is pending past its leg threshold   |
 
@@ -103,6 +108,36 @@ same `type` values as processor metrics (`send_to_recv`, `send_to_timeout`, `rec
 event counter, not a failure gauge: a packet that remains stuck increments on every dispatcher poll,
 so alerts should be built on `rate()`. The threshold is hard-coded for now (60m pending; timeouts 5m
 past the packet timeout, with a 15m source-finality guard) and can move to config in the future.
+
+`relay_packet_execution_total` records receipt observations, including transactions discovered from
+other relayers. A matching WriteAcknowledgement, AckPacket, or TimeoutPacket event counts as `executed`.
+An application-error acknowledgement still counts as an executed recv. A successful receipt missing
+the packet's event counts as `missing_event`; a failed receipt counts as `tx_reverted`. Pending
+receipts, RPC/decoding errors, and simulations add no execution result. These are observations of
+mined receipts, not finality guarantees. A bounded cache deduplicates the last 100,000
+(chain, transaction, packet, processor) observations. Restarts or eviction can allow recounting;
+the counters are operational telemetry, not a durable transaction ledger.
+
+For dispatcher freshness, use `time() - dispatcher_last_success_timestamp_seconds` per instance.
+An empty successful poll advances this timestamp; a blocked pipeline or failed database operation
+does not. The subscription gauge describes subscription lifecycle state, not proof that an otherwise
+connected endpoint is delivering every event. Missing series must be monitored separately from zero.
+
+### Transaction diagnostic logs
+
+Successful submissions log at INFO with `chainID`, `txHash`, `sender`, `nonce`, `gasLimit`,
+`maxFeePerGasWei`, `maxPriorityFeePerGasWei`, `baseFeePerGasWei`, and `minedNonce`.
+EIP-1559 fee fields are decimal strings in wei; the fee cap is not the eventual effective gas price.
+Rejected or uncertain broadcasts and fee-ceiling exhaustion log the attempted fees and RPC error.
+Submission errors and capacity deferrals include the chain, sender, and detailed error in logs;
+the attempts metric has no reason label.
+
+Receipt timeouts log `submittedAt`, `pendingDuration`, and `retryReason=receipt_missing` at WARN.
+Mined reverts log the transaction hash, block number, gas used, and effective gas price at WARN.
+Standard receipts contain no revert data, so these logs mark `revertReason=unavailable`; use the
+hash and block to investigate with tracing. RPC errors containing revert data are decoded using
+the known contract ABIs. Warnings are deduplicated per submitter by transaction hash and reason
+within a 10,000-entry cache. No raw transaction payloads are persisted.
 
 ### EVM client metrics
 
