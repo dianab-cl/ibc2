@@ -10,15 +10,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cosmos/solidity-ibc-eureka/packages/go-abigen/ibcerc20"
-	"github.com/cosmos/solidity-ibc-eureka/packages/go-abigen/ics20transfer"
-	"github.com/cosmos/solidity-ibc-eureka/packages/go-abigen/ics26router"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 
+	"github.com/cosmos/ibc-contracts/packages/go-abigen/ibcerc20"
+	"github.com/cosmos/ibc-contracts/packages/go-abigen/ics20transfer"
+	"github.com/cosmos/ibc-contracts/packages/go-abigen/ics26router"
 	transfertypes "github.com/cosmos/ibc-go/v11/modules/apps/transfer/types"
 	hostv2 "github.com/cosmos/ibc-go/v11/modules/core/24-host/v2"
 	"github.com/cosmos/ibc/e2e/internal/harness/chain/evm"
@@ -79,6 +79,7 @@ type TransferSend struct {
 	amount            *big.Int
 	sourceBefore      *big.Int
 	destinationBefore *big.Int
+	timeoutTimestamp  uint64
 }
 
 var errTransferAlreadySubmitted = errors.New("e2etest: prepared Transfer has already been submitted")
@@ -186,8 +187,11 @@ func (p *PreparedTransfer) Submit(ctx context.Context) (*TransferSend, error) {
 		amount:            new(big.Int).Set(p.request.Amount),
 		sourceBefore:      new(big.Int).Set(p.sourceBefore),
 		destinationBefore: new(big.Int).Set(p.destinationBefore),
+		timeoutTimestamp:  p.timeoutTimestamp,
 	}, nil
 }
+
+func (t *TransferSend) TimeoutTimestamp() uint64 { return t.timeoutTimestamp }
 
 // VerifyCommitmentCreated checks the source commitment at the send transaction's block.
 func (t *TransferSend) VerifyCommitmentCreated(ctx context.Context) error {
@@ -225,6 +229,24 @@ func (t *TransferSend) VerifyReceiptCreated(ctx context.Context) error {
 	return nil
 }
 
+// VerifyReceiptAbsent checks that the destination has not received the packet.
+func (t *TransferSend) VerifyReceiptAbsent(ctx context.Context) error {
+	receipt, err := getCommitment(
+		ctx,
+		t.app.destination,
+		t.app.destRouter,
+		crypto.Keccak256Hash(hostv2.PacketReceiptKey(t.app.destClientID, t.packetTx.Sequence)),
+		nil,
+	)
+	if err != nil {
+		return fmt.Errorf("e2etest: query Transfer packet %s destination receipt: %w", t.packetTx.reference(), err)
+	}
+	if receipt != ([32]byte{}) {
+		return fmt.Errorf("e2etest: Transfer packet %s destination receipt already exists", t.packetTx.reference())
+	}
+	return nil
+}
+
 // VerifyCommitmentCleared checks that acknowledgement or timeout removed the source commitment.
 func (t *TransferSend) VerifyCommitmentCleared(ctx context.Context) error {
 	commitment, err := getCommitment(
@@ -239,6 +261,24 @@ func (t *TransferSend) VerifyCommitmentCleared(ctx context.Context) error {
 	}
 	if commitment != ([32]byte{}) {
 		return fmt.Errorf("e2etest: Transfer packet %s source commitment was not cleared", t.packetTx.reference())
+	}
+	return nil
+}
+
+// VerifyCommitmentPresent checks that the packet has not been acknowledged or timed out.
+func (t *TransferSend) VerifyCommitmentPresent(ctx context.Context) error {
+	commitment, err := getCommitment(
+		ctx,
+		t.app.source,
+		t.app.sourceRouter,
+		crypto.Keccak256Hash(hostv2.PacketCommitmentKey(t.app.sourceClientID, t.packetTx.Sequence)),
+		nil,
+	)
+	if err != nil {
+		return fmt.Errorf("e2etest: query Transfer packet %s source commitment: %w", t.packetTx.reference(), err)
+	}
+	if commitment == ([32]byte{}) {
+		return fmt.Errorf("e2etest: Transfer packet %s source commitment was cleared", t.packetTx.reference())
 	}
 	return nil
 }
@@ -547,7 +587,7 @@ func verifyPacketTimeout(
 
 func sendPacketSequence(router common.Address) func(*types.Receipt) (uint64, bool, error) {
 	return func(receipt *types.Receipt) (uint64, bool, error) {
-		sequences, err := sendPacketSequences(router, receipt)
+		sequences, err := SendPacketSequences(router, receipt)
 		if err != nil {
 			return 0, false, err
 		}
@@ -558,9 +598,9 @@ func sendPacketSequence(router common.Address) func(*types.Receipt) (uint64, boo
 	}
 }
 
-// sendPacketSequences returns every SendPacket sequence emitted by the router
+// SendPacketSequences returns every SendPacket sequence emitted by the router
 // in one receipt, in log order
-func sendPacketSequences(router common.Address, receipt *types.Receipt) ([]uint64, error) {
+func SendPacketSequences(router common.Address, receipt *types.Receipt) ([]uint64, error) {
 	parser := mustBinding(ics26router.NewContractFilterer(router, nil))
 	events, err := receiptEvents(receipt, router, parser.ParseSendPacket)
 	if err != nil {

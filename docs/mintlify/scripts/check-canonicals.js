@@ -27,6 +27,11 @@ const files = walk(FROZEN);
 for (const file of files) {
   const text = fs.readFileSync(file, "utf8");
   const rel = path.relative(FROZEN, file);
+  // A page with `url:` frontmatter is an external link in the sidebar, not an
+  // archived page. It has no content to be superseded, so a canonical pointing
+  // at a `latest` twin would be meaningless; `noindex` already keeps it out of
+  // search. Skip it rather than demand a canonical it cannot sensibly have.
+  if (/^url:\s*\S/m.test(text)) continue;
   if (!/^noindex:\s*true\s*$/m.test(text)) {
     problems.push(`${rel}: missing "noindex: true"`);
     continue;

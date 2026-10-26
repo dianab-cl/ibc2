@@ -9,13 +9,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/cosmos/solidity-ibc-eureka/packages/go-abigen/ics26router"
-	"github.com/cosmos/solidity-ibc-eureka/packages/go-abigen/ift"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 
+	"github.com/cosmos/ibc-contracts/packages/go-abigen/ics26router"
+	"github.com/cosmos/ibc-contracts/packages/go-abigen/ift"
 	"github.com/cosmos/ibc/e2e/internal/harness/chain/evm"
 	"github.com/cosmos/ibc/e2e/internal/harness/environment"
 	"github.com/cosmos/ibc/gen/go/solidity-abi/iftbatchtransfershim"
@@ -36,6 +36,14 @@ type IFTRequest struct {
 	// a far-future-but-valid default; positive values are rounded up to whole seconds.
 	Timeout time.Duration
 }
+
+// ERCTransferRequest is one same-chain ERC-20 payment from the route's batch shim.
+type ERCTransferRequest struct {
+	Address common.Address
+	Amount  *big.Int
+}
+
+const ercTransferChunk = 64
 
 // IFT drives the Interchain Fungible Token pair on a single directed route.
 type IFT struct {
@@ -176,7 +184,7 @@ func (i *IFT) SendBatch(ctx context.Context, requests []IFTRequest) (*IFTBatch, 
 	if err != nil {
 		return nil, fmt.Errorf("e2etest: send IFT batch on route %q: %w", i.routeID, err)
 	}
-	sequences, err := sendPacketSequences(i.sourceRouter, receipt)
+	sequences, err := SendPacketSequences(i.sourceRouter, receipt)
 	if err != nil {
 		return nil, err
 	}
@@ -207,6 +215,45 @@ func (i *IFT) SendBatch(ctx context.Context, requests []IFTRequest) (*IFTBatch, 
 		destinationSupplyBefore: destinationSupplyBefore,
 		total:                   total,
 	}, nil
+}
+
+// TransferBatch batch transfers IFT as ERC-20 (on the same chain)
+func (i *IFT) TransferBatch(ctx context.Context, requests []ERCTransferRequest) ([]*types.Receipt, error) {
+	recipients := make([]iftbatchtransfershim.IFTBatchTransferShimRecipient, len(requests))
+	for k, request := range requests {
+		amount, err := validAmount(request.Amount)
+		if err != nil {
+			return nil, err
+		}
+		if request.Address == (common.Address{}) {
+			return nil, fmt.Errorf("e2etest: ERC transfer %d has a zero address", k)
+		}
+
+		recipients[k] = iftbatchtransfershim.IFTBatchTransferShimRecipient{
+			Account: request.Address,
+			Amount:  amount,
+		}
+	}
+
+	receipts := make([]*types.Receipt, 0, (len(recipients)+ercTransferChunk-1)/ercTransferChunk)
+	for start := 0; start < len(recipients); start += ercTransferChunk {
+		end := min(start+ercTransferChunk, len(recipients))
+		data, err := calldata(func(opts *bind.TransactOpts) (*types.Transaction, error) {
+			return iftBatchShimTransactor.BatchTransfer(opts, i.sourceIFT, recipients[start:end])
+		})
+		if err != nil {
+			return nil, fmt.Errorf("e2etest: pack IFT batchTransfer on route %q: %w", i.routeID, err)
+		}
+		receipt, err := i.source.evm.BroadcastTx(ctx, i.sender, &i.batcher, data, nil)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"e2etest: ERC transfer batch %d:%d on route %q: %w",
+				start, end, i.routeID, err,
+			)
+		}
+		receipts = append(receipts, receipt)
+	}
+	return receipts, nil
 }
 
 type iftBatchPacket struct {

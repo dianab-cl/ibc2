@@ -434,8 +434,8 @@ def _():
 def _():
     with Sandbox() as box:
         box.edit("cli/internal/config/relayer.go",
-                 'GasTipCapMultiplier *float64 `yaml:"gasTipCapMultiplier,omitempty"`',
-                 'GasTipCapMultiplier *float64 `yaml:"-"`')
+                 'Enabled *bool `yaml:"enabled,omitempty"`',
+                 'Enabled *bool `yaml:"-"`')
         raises(box, "config", "FALLBACK_DOCS describes fields that are gone",
                "dead_description")
 
@@ -1279,7 +1279,7 @@ def _():
 @case("renaming an error constructor changes nothing")
 def _():
     with Sandbox() as box:
-        for f in ("errors.go", "config.go", "relayer.go"):
+        for f in ("errors.go", "config.go", "relayer.go", "tls.go"):
             box.edit(f"cli/internal/config/{f}", "errPathf", "cfgErrorf", count=-1)
         unchanged(box, "config")
 

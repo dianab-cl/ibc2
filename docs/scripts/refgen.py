@@ -684,8 +684,8 @@ DEFAULTS_FUNC = r"^func [A-Z]\w*\(\s*\)\s*\*?" + CONFIG_ROOT + r"\s*\{"
 # The constant names it: a package that moves costs nothing, and a constant
 # that is renamed or deleted is a real change that says so by name.
 DEFAULT_CONSTS = {
+    ("RelayerEVMConfig", "pendingTxTimeout"): [("", "DefaultPendingTxTimeout")],
     ("RelayerConfig", "dispatchPollInterval"): [("", "DefaultPollInterval")],
-    ("RelayerChainOverride", "txSubmissionDelay"): [("", "DefaultTxSubmissionDelay")],
     ("RelayerChainOverride", "packetBatchSize"): [("", "DefaultBatchSize")],
     ("RelayerChainOverride", "packetBatchTimeout"): [
         ("receive and acknowledge", "DefaultBatchTimeout"),
@@ -721,11 +721,8 @@ FALLBACK_DOCS = {
     ("SignerConfig", "type"): ("Whether the key is a file on disk or a key held by a remote signer.", "febf1ab4"),
     ("RelayerConfig", "dispatchPollInterval"): ("How often the dispatcher polls the store for unfinished packets.", "893f79b1"),
     ("RelayerChainOverride", "chainId"): ("The chain these settings apply to.", "69a3e543"),
-    ("RelayerChainOverride", "txSubmissionDelay"): ("Minimum delay between two transaction submissions on the chain.", "5691fa23"),
     ("RelayerChainOverride", "packetBatchSize"): ("How many packets the relayer puts in one transaction.", "b4f4f14c"),
     ("RelayerChainOverride", "packetBatchTimeout"): ("How long the relayer waits to fill a batch before submitting it.", "84d8816e"),
-    ("RelayerEVMConfig", "gasFeeCapMultiplier"): ("Multiplies the fee cap the node suggests.", "b9de0a8d"),
-    ("RelayerEVMConfig", "gasTipCapMultiplier"): ("Multiplies the tip cap the node suggests.", "634e0708"),
     ("ConnectionConfig", "alias"): ("Name for the connection, unique in the file.", "7e352d14"),
     ("AutoRelayConfig", "enabled"): ("Whether the relayer carries packets leaving this end without being asked.", "d693129e"),
     ("ClientEnd", "chainId"): ("The chain this end's client lives on.", "69a3e543"),
@@ -745,8 +742,6 @@ NO_NAMED_DEFAULT = {
     # nil and false are the same input: a connection end without it is not
     # auto-relayed (relayer.go:L127)
     ("AutoRelayConfig", "enabled"),
-    ("RelayerEVMConfig", "gasFeeCapMultiplier"),
-    ("RelayerEVMConfig", "gasTipCapMultiplier"),
     # unset inherits relayer.clearInterval rather than any one value
     # (relayer.go, ClearIntervalFor)
     ("RelayerChainOverride", "clearInterval"),
@@ -1470,7 +1465,8 @@ def parse_go_config():
 RULELESS_VALIDATORS = {
     "Attestors", "Chains", "Signers",        # check cross-references, delegate the rest
     "Config", "ServerConfig",
-    "AttestationParams", "BesuQBFTParams",   # `return nil`, satisfies an interface
+    "AttestationParams", "BesuParams",       # `return nil`, satisfies an interface
+    "TLSClientConfig",                       # `return c.TLSConfig()` error, delegates
 }
 
 
@@ -1648,9 +1644,20 @@ def discover_config_sections(model, membership=None):
                                   (struct, names[0])))
 
         field, values = _discriminator(struct, model)
+
+        def owner(row):
+            """The field of `struct` a row hangs off: itself, or for a
+            flattened row like `tls.caFile`, the block it sits in."""
+            if row[0] == struct:
+                return row[1]
+            top = row[2].split(".", 1)[0]
+            return next((f for f in model["structs"][struct]["fields"]
+                         if f["yaml"] == top), row[1])
+
         if values:
             per_value = {v: [r for r in rows
-                             if _applies(r[0], r[1], model, v, membership)]
+                             if _applies(struct, owner(r), model, v, membership)
+                             and _applies(r[0], r[1], model, v, membership)]
                          for v in values}
             # a two-valued key that gates nothing is not a discriminator: db.type
             # picks a backend, it does not change which keys exist

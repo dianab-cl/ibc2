@@ -75,7 +75,7 @@
             "pages": [
               "ibc/04-light-clients/01-attestation-light-client",
               "ibc/04-light-clients/02-attestors",
-              "ibc/04-light-clients/03-besu-qbft-light-client"
+              "ibc/04-light-clients/03-besu-light-client"
             ]
           },
           {

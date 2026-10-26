@@ -29,7 +29,7 @@ How a chain decides what to believe.
 
 - [The attestation light client](ibc/04-light-clients/01-attestation-light-client.mdx): Accepts what a quorum of attestors signs.
 - [Attestors](ibc/04-light-clients/02-attestors.mdx): The services that sign, and the keys trusted.
-- [The Besu QBFT light client](ibc/04-light-clients/03-besu-qbft-light-client.mdx): Verifies sealed Besu headers and storage proofs.
+- [The Besu QBFT and IBFT 2.0 light clients](ibc/04-light-clients/03-besu-light-client.mdx): Verify sealed Besu headers and storage proofs.
 
 ## IBC-solidity contracts
 
