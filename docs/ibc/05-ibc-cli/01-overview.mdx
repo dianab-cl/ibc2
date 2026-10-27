@@ -1,5 +1,5 @@
 ---
-title: "Overview"
+title: IBC CLI overview
 description: "One binary that deploys IBC onto a chain, then runs the relayer and attestors that carry packets across it."
 ---
 
@@ -38,7 +38,7 @@ It deploys the following contracts:
 
 Signer keys, contract addresses, client IDs, and finality settings all have to stay consistent across the on-chain and off-chain pieces, which can be difficult to manage by hand. The CLI handles the deployment and the checks that catch a mismatch, so you do not write your own deployment and query scripts.
 
-Follow the [tutorial](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) to learn the full process of deploying IBC between two chains and sending a token.
+Follow the [tutorial](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token) to learn the full process of deploying IBC between two chains and sending a token.
 
 Each side can use a different client type. The tutorial pairs an attestation light client with a Besu consensus light client.
 
@@ -148,10 +148,10 @@ Most configurations can be generated. `ibc config new` writes a starting file, `
 
 The IBC CLI also validates the file with the `ibc config validate` command. 
 
-The [configuration reference](/ibc/05-ibc-cli/06-configuration) carries every key and its default. [CLI commands](/ibc/05-ibc-cli/07-cli-commands) and the [API reference](/ibc/05-ibc-cli/08-api) cover the rest of the surface.
+The [configuration reference](/ibc/05-ibc-cli/04-reference/01-configuration) carries every key and its default. [CLI commands](/ibc/05-ibc-cli/04-reference/02-cli-commands) and the [API reference](/ibc/05-ibc-cli/04-reference/03-api) cover the rest of the surface.
 
 ## Next steps
 
-- [Deploy IBC and send a token](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) brings up two chains and moves a token between them.
-- [Run a standalone attestor](/ibc/05-ibc-cli/04-run-a-standalone-attestor) takes an attestor out of the relayer's process and into its own.
-- [Run a standalone relayer](/ibc/05-ibc-cli/05-run-a-standalone-relayer) brings up a relayer against a connection someone else deployed.
+- [Deploy IBC and send a token](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token) brings up two chains and moves a token between them.
+- [Run a standalone attestor](/ibc/05-ibc-cli/03-guides/01-run-a-standalone-attestor) takes an attestor out of the relayer's process and into its own.
+- [Run a standalone relayer](/ibc/05-ibc-cli/03-guides/02-run-a-standalone-relayer) brings up a relayer against a connection someone else deployed.

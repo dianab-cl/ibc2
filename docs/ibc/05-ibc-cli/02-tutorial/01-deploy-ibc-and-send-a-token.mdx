@@ -164,7 +164,7 @@ Rerunning skips contracts already recorded and deployed, and resumes any unfinis
 These commands enable public relaying and make the deployer the access manager's admin.
 For production deployments, restrict relaying to authorized keys.
 Transfer admin authority to an appropriate account.
-Follow [Grant, change, and revoke a role](/ibc/05-ibc-cli/03b-grant-change-and-revoke-a-role) for both procedures.
+Follow [Grant, change, and revoke a role](/ibc/05-ibc-cli/03-guides/05-grant-change-and-revoke-a-role) for both procedures.
 </Warning>
 
 2. Deploy an attestation light client on 41001 to verify chain 41002:
@@ -286,7 +286,7 @@ level=INFO msg="Migrated database" module=bootstrap migrations_applied=4
 level=INFO msg=Readiness module=bootstrap readiness="{Event:ready ChainsConnected:[41001 41002] HTTP:[::]:3000}"
 ```
 
-The readiness line confirms that startup completed. For ongoing API readiness, use the [gRPC health check](/ibc/05-ibc-cli/08-api#health-checks), which also checks database reachability. "Dual mode" means the local attestor runs inside the relayer's process.
+The readiness line confirms that startup completed. For ongoing API readiness, use the [gRPC health check](/ibc/05-ibc-cli/04-reference/03-api#health-checks), which also checks database reachability. "Dual mode" means the local attestor runs inside the relayer's process.
 
 Leave it running, and go back to your first terminal for the rest of the tutorial.
 
@@ -394,5 +394,5 @@ Two local Besu chains now have IBC contracts and connected token contracts. One 
 ## Next steps
 
 - [Overview](/ibc/05-ibc-cli/01-overview) explains what the three parts are made of and how they fit together.
-- [Run a standalone attestor](/ibc/05-ibc-cli/04-run-a-standalone-attestor) moves an attestor out of the relayer's process and into its own.
-- [Run a standalone relayer](/ibc/05-ibc-cli/05-run-a-standalone-relayer) brings up a relayer against a deployment, including one that replaces a relayer that stopped.
+- [Run a standalone attestor](/ibc/05-ibc-cli/03-guides/01-run-a-standalone-attestor) moves an attestor out of the relayer's process and into its own.
+- [Run a standalone relayer](/ibc/05-ibc-cli/03-guides/02-run-a-standalone-relayer) brings up a relayer against a deployment, including one that replaces a relayer that stopped.

@@ -56,3 +56,43 @@
     if (location.pathname !== last) { last = location.pathname; apply(); }
   });
 })();
+
+/* Keep internal links in the same tab.
+
+   Mintlify's navbar `primary` CTA is built for external destinations, so it
+   renders with target="_blank" unconditionally — there is no way to turn that
+   off from docs.json, whose schema allows only type/label/href on
+   navbar.primary and sets additionalProperties:false. Our CTA points at the
+   tutorial, an internal page, so the new tab is wrong.
+
+   Rather than matching Mintlify's class names, which change between releases,
+   this keys on the thing that is actually wrong: an anchor marked _blank whose
+   href resolves to this origin. Anything genuinely off-site is left alone. */
+(function () {
+  function sameOrigin(a) {
+    var href = a.getAttribute("href");
+    if (!href || href[0] === "#") return false;
+    try { return new URL(href, location.href).origin === location.origin; }
+    catch (e) { return false; }
+  }
+
+  function fix() {
+    var marked = document.querySelectorAll('a[target="_blank"]');
+    for (var i = 0; i < marked.length; i++) {
+      if (sameOrigin(marked[i])) {
+        marked[i].removeAttribute("target");
+        marked[i].removeAttribute("rel");
+      }
+    }
+  }
+
+  fix();
+
+  /* Mintlify re-renders the navbar on client-side navigation, which restores
+     the attribute, so watch for it rather than running once. */
+  if (window.MutationObserver) {
+    new MutationObserver(fix).observe(document.documentElement, {
+      childList: true, subtree: true, attributeFilter: ["target"],
+    });
+  }
+})();

@@ -32,7 +32,7 @@ That timestamp is this client's [consensus state](/ibc/02-how-ibc-works/04-clien
 
 The set and the threshold hold for the life of the client. Deployment fixes them along with an initial height and timestamp, and rejects an empty set, a zero threshold, a threshold larger than the set, and duplicate addresses.
 
-Changing the set requires a replacement contract and a router client migration. [Rotate an attestor set](/ibc/05-ibc-cli/03c-rotate-an-attestor-set) preserves the client ID while replacing the attestor set.
+Changing the set requires a replacement contract and a router client migration. [Rotate an attestor set](/ibc/05-ibc-cli/03-guides/06-rotate-an-attestor-set) preserves the client ID while replacing the attestor set.
 
 Each attestor adds two assumptions of its own: that its chain RPC endpoint reports accurate state, and that its signing key stays secret. [Attestors](/ibc/04-light-clients/02-attestors) covers how attestors run and how their keys are held.
 
@@ -136,5 +136,5 @@ Below the threshold, proof generation fails and the packet stays pending. Timeou
 
 Disagreement stalls a connection identically. Only byte-identical attestation data aggregates, so a proof exists once one group of attestors reaches the threshold on its own.
 
-The [tutorial](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) deploys one of these clients on each of two chains.
+The [tutorial](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token) deploys one of these clients on each of two chains.
 Visit the [Attestation light client contract page](/ibc/06-ibc-solidity-contracts/05-attestation-light-client) for more information on the Solidity implementation.

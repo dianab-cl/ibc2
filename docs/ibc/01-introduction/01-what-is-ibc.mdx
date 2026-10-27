@@ -20,7 +20,35 @@ IBC provides a complete interoperability stack:
 
 IBC is modular and extensible by design, allowing developers to adopt existing applications and verification systems or build custom modules tailored to their needs.
 
-# Why IBC?
+## The three layers
+
+IBC separates a cross-chain message into three layers, each with one job. An application developer works at the top layer and inherits the other two.
+
+![The three IBC layers: application, core, and verification](/mintlify/images/ibc/ibc-layers.png)
+
+### Application layer
+
+Defines what a message means: what is sent, and what happens when it arrives. That might be transferring an asset or executing a contract call. [Applications](/ibc/02-how-ibc-works/02-packets-and-applications) are composable building blocks rather than one-off integrations, so cross-chain functionality can be reused instead of reimplemented from scratch. The standard modules are fungible token transfers ([ICS-20](/ibc/spec/app/ics-020-fungible-token-transfer/README)), [general message passing](/ibc/03-applications/01-gmp), and [interchain fungible tokens](/ibc/03-applications/02-ift).
+
+### IBC core layer
+
+Routes and records. A single [router](/ibc/02-how-ibc-works/03-core-router-and-store) packages application messages into [packets](/ibc/02-how-ibc-works/02-packets-and-applications), dispatches each arriving packet to the application its payload names, and writes the packet's progress to the [store](/ibc/02-how-ibc-works/03-core-router-and-store#the-store) on chain. This is the common infrastructure that lets independent networks coordinate across distinct smart contract languages and security models. On EVM chains it is the [`ICS26Router` contract](/ibc/06-ibc-solidity-contracts/02-ics26-router).
+
+### Verification layer
+
+Establishes that an incoming message genuinely reflects the counterparty's state. [Light clients](/ibc/02-how-ibc-works/04-clients-and-counterparties) track the connected network, and cryptographic proofs are checked against the state a client already holds. Several client architectures answer the same interface:
+
+- Consensus light clients verify messages directly against signed consensus data, including the [Besu QBFT and IBFT 2.0 clients](/ibc/04-light-clients/03-besu-light-client) for enterprise EVM networks.
+- [Attestation-based clients](/ibc/04-light-clients/01-attestation-light-client) accept what a quorum of a known [attestor set](/ibc/04-light-clients/02-attestors) has signed.
+- Zk-proof clients verify a succinct proof of the counterparty's state transition.
+
+That range is what allows IBC to operate across heterogeneous execution environments, including Cosmos, EVM-based, and Solana-based networks.
+
+Relayers sit outside these layers. They are off-chain services that [carry packets and proofs](/ibc/02-how-ibc-works/05-relayer) between chains, and they cannot alter what they carry. [How IBC works](/ibc/02-how-ibc-works/01-overview) follows a single packet through all of it, from send to [settlement](/ibc/02-how-ibc-works/06-packet-lifecycle).
+
+The separation of concerns is what keeps cross-chain development tractable: an application developer defines the message and how to handle it, without managing client verification, connection setup, or proof construction.
+
+## Why IBC?
 
 ### Direct communication and verification
 
@@ -43,4 +71,4 @@ IBC supports multiple trust models to meet different business and regulatory nee
 
 Because IBC is an open standard rather than a proprietary network, organizations retain control over their infrastructure, contracts, and security mechanisms while remaining interoperable with other IBC-enabled systems. Unlike other interoperability solutions, IBC imposes no protocol-level platform fees and does not require participants to rely on a specific service provider.
 
-To see IBC in action, [follow the tutorial to deploy IBC on two local chains and move a token](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token).
+To see IBC in action, [follow the tutorial to deploy IBC on two local chains and move a token](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token).

@@ -40,6 +40,58 @@
       "vscode"
     ]
   },
+  "redirects": [
+    {
+      "source": "/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token",
+      "destination": "/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/04-run-a-standalone-attestor",
+      "destination": "/ibc/05-ibc-cli/03-guides/01-run-a-standalone-attestor",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/05-run-a-standalone-relayer",
+      "destination": "/ibc/05-ibc-cli/03-guides/02-run-a-standalone-relayer",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/03-make-a-cross-chain-gmp-call",
+      "destination": "/ibc/05-ibc-cli/03-guides/03-make-a-cross-chain-gmp-call",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/03a-upgrade-the-router-contract",
+      "destination": "/ibc/05-ibc-cli/03-guides/04-upgrade-the-router-contract",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/03b-grant-change-and-revoke-a-role",
+      "destination": "/ibc/05-ibc-cli/03-guides/05-grant-change-and-revoke-a-role",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/03c-rotate-an-attestor-set",
+      "destination": "/ibc/05-ibc-cli/03-guides/06-rotate-an-attestor-set",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/06-configuration",
+      "destination": "/ibc/05-ibc-cli/04-reference/01-configuration",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/07-cli-commands",
+      "destination": "/ibc/05-ibc-cli/04-reference/02-cli-commands",
+      "permanent": true
+    },
+    {
+      "source": "/ibc/05-ibc-cli/08-api",
+      "destination": "/ibc/05-ibc-cli/04-reference/03-api",
+      "permanent": true
+    }
+  ],
   "navigation": {
     "tabs": [
       {
@@ -83,6 +135,13 @@
             ]
           },
           {
+            "group": "Security",
+            "icon": "lock",
+            "pages": [
+              "ibc/07-security/01-audits"
+            ]
+          },
+          {
             "group": "Repositories",
             "icon": "folder-git-2",
             "pages": [
@@ -97,38 +156,38 @@
         "tab": "IBC CLI",
         "groups": [
           {
-            "group": "Get started",
-            "icon": "rocket",
+            "group": "About",
+            "icon": "info",
             "pages": [
-              "ibc/05-ibc-cli/01-overview",
-              "ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"
+              "ibc/05-ibc-cli/01-overview"
+            ]
+          },
+          {
+            "group": "Tutorial",
+            "icon": "graduation-cap",
+            "pages": [
+              "ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token"
             ]
           },
           {
             "group": "Guides",
             "icon": "compass",
             "pages": [
-              "ibc/05-ibc-cli/03-make-a-cross-chain-gmp-call",
-              "ibc/05-ibc-cli/03a-upgrade-the-router-contract",
-              "ibc/05-ibc-cli/03b-grant-change-and-revoke-a-role",
-              "ibc/05-ibc-cli/03c-rotate-an-attestor-set"
-            ]
-          },
-          {
-            "group": "Run the services",
-            "icon": "server",
-            "pages": [
-              "ibc/05-ibc-cli/04-run-a-standalone-attestor",
-              "ibc/05-ibc-cli/05-run-a-standalone-relayer"
+              "ibc/05-ibc-cli/03-guides/01-run-a-standalone-attestor",
+              "ibc/05-ibc-cli/03-guides/02-run-a-standalone-relayer",
+              "ibc/05-ibc-cli/03-guides/03-make-a-cross-chain-gmp-call",
+              "ibc/05-ibc-cli/03-guides/04-upgrade-the-router-contract",
+              "ibc/05-ibc-cli/03-guides/05-grant-change-and-revoke-a-role",
+              "ibc/05-ibc-cli/03-guides/06-rotate-an-attestor-set"
             ]
           },
           {
             "group": "Reference",
             "icon": "book",
             "pages": [
-              "ibc/05-ibc-cli/06-configuration",
-              "ibc/05-ibc-cli/07-cli-commands",
-              "ibc/05-ibc-cli/08-api"
+              "ibc/05-ibc-cli/04-reference/01-configuration",
+              "ibc/05-ibc-cli/04-reference/02-cli-commands",
+              "ibc/05-ibc-cli/04-reference/03-api"
             ]
           },
           {
@@ -823,7 +882,7 @@
     "primary": {
       "type": "button",
       "label": "Get started",
-      "href": "/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"
+      "href": "/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token"
     }
   },
   "footer": {
@@ -881,44 +940,15 @@
         ]
       },
       {
-        "header": "Get in touch",
-        "items": [
-          {
-            "label": "Developer Discord",
-            "href": "https://discord.gg/interchain"
-          },
-          {
-            "label": "Community Telegram",
-            "href": "https://t.me/CosmosOG"
-          },
-          {
-            "label": "Contact us",
-            "href": "https://www.cosmoslabs.io/contact"
-          },
-          {
-            "label": "Cosmos website",
-            "href": "https://cosmos.network/"
-          }
-        ]
-      },
-      {
         "header": "Security",
         "items": [
           {
             "label": "Security audits",
-            "href": "/ibc-go/latest/security-audits"
+            "href": "/ibc/07-security/01-audits"
           },
           {
-            "label": "Cosmos HackerOne",
-            "href": "https://hackerone.com/cosmos"
-          },
-          {
-            "label": "Privacy",
-            "href": "https://cosmos.network/privacy-policy"
-          },
-          {
-            "label": "Trademark",
-            "href": "https://cosmos.network/trademark"
+            "label": "Bug Bounty",
+            "href": "https://immunefi.com/bug-bounty/cosmos/information/"
           }
         ]
       }

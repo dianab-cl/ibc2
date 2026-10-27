@@ -13,7 +13,7 @@ The commands on this page need:
 - [jq](https://jqlang.org/download/) installed
 - [Git](https://git-scm.com/downloads) installed
 
-Follow the [tutorial](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) to set up a deployment with a GMP app, a client, and a running relayer.
+Follow the [tutorial](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token) to set up a deployment with a GMP app, a client, and a running relayer.
 
 Once you have a live connection and a running relayer, you'll need the following values from each chain. Run the commands in this guide from the `ibc/cli` directory:
 
@@ -139,7 +139,7 @@ cast receipt $TX status --rpc-url $RPC_A
 
 ## 3. Relay the packet
 
-The relayer will pick up the packet automatically and relay it to the destination chain. The command below reads the tutorial's relayer; add `--config <file>` if yours runs from a different one, as it does after [Run a standalone relayer](/ibc/05-ibc-cli/05-run-a-standalone-relayer).
+The relayer will pick up the packet automatically and relay it to the destination chain. The command below reads the tutorial's relayer; add `--config <file>` if yours runs from a different one, as it does after [Run a standalone relayer](/ibc/05-ibc-cli/03-guides/02-run-a-standalone-relayer).
 
 You can watch the transaction settle on the destination. This takes about a minute:
 

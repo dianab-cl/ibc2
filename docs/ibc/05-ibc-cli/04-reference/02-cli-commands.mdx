@@ -186,7 +186,7 @@ ibc keys show relayer
 
 ## `deploy`
 
-Deploying a working connection between two chains takes `deploy core` on both, then a `deploy client` subcommand on both, each client tracking the other chain. The [tutorial](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) walks that through end to end.
+Deploying a working connection between two chains takes `deploy core` on both, then a `deploy client` subcommand on both, each client tracking the other chain. The [tutorial](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token) walks that through end to end.
 
 `--chain` is declared once for the whole `deploy` group, and the commands that provision something reject an empty value themselves: `deploy core`, `deploy client attestation`, `deploy client besu`, `deploy gmp`, and `deploy ift`. {/* [cli/cmd/ibc/deploy.go: deployCore] */}
 
@@ -498,7 +498,7 @@ ibc relayer packets --chain-id 41001 --tx-hash 0xSendTxHash
 
 Every filter flag is optional, and they combine. Results are paged: `--all` follows the pages and prints the combined result, and `--cursor` resumes from a previous one. {/* [cli/cmd/ibc/relayer.go: relayerPacketsAll] */}
 
-Use the short names in the flag table for `--state`. For example, `--state succeeded` selects `PACKET_STATE_SUCCEEDED` results. {/* [cli/cmd/ibc/relayer.go: packetStates] */} See [API](/ibc/05-ibc-cli/08-api#packetstate) for the returned states.
+Use the short names in the flag table for `--state`. For example, `--state succeeded` selects `PACKET_STATE_SUCCEEDED` results. {/* [cli/cmd/ibc/relayer.go: packetStates] */} See [API](/ibc/05-ibc-cli/04-reference/03-api#packetstate) for the returned states.
 
 ## `attestor`
 
@@ -668,5 +668,5 @@ Migrations run against the `db` block, so `--db` picks a different database for 
 
 ## Next steps
 
-- [Configuration](/ibc/05-ibc-cli/06-configuration) for the file these commands read.
-- [API](/ibc/05-ibc-cli/08-api) for the gRPC calls behind `relayer relay`, `relayer packets`, and the attestor queries.
+- [Configuration](/ibc/05-ibc-cli/04-reference/01-configuration) for the file these commands read.
+- [API](/ibc/05-ibc-cli/04-reference/03-api) for the gRPC calls behind `relayer relay`, `relayer packets`, and the attestor queries.
