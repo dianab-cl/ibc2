@@ -805,25 +805,17 @@ def _():
             home = tempfile.mkdtemp(prefix="refgen-req-")
             try:
                 shutil.copyfile(fixture, os.path.join(home, "ibc.yml"))
-                # A cell reading "required to run" is a claim about the
-                # runnable targets, not about the file being well formed, so
-                # ask the same question the cell answers. Deliberately its own
-                # probing rather than the generator's: two paths to one answer
-                # is the point, and calling refgen here would test nothing.
-                # refgen emits "to run", "to relay" and "to attest". Each
-                # names the process that refuses to start without the key,
-                # so probe that one; treating "to relay" as unscoped asked
-                # `config validate` with no target, where the key is not
-                # required, and reported a correct page as wrong.
+                # A cell reading "required to run", "to relay" or "to attest"
+                # is a claim about the runnable targets, not about the file
+                # being well formed, so ask the same question the cell
+                # answers. Deliberately its own probing rather than the
+                # generator's: two paths to one answer is the point, and
+                # calling refgen here would test nothing.
                 text = texts.get(key, "")
-                if "to relay" in text:
-                    targets = [["relayer"]]
-                elif "to attest" in text:
-                    targets = [["attestor"]]
-                elif "to run" in text:
-                    targets = [["relayer"], ["attestor"]]
-                else:
-                    targets = [[]]
+                targets = ([["relayer"], ["attestor"]] if "to run" in text
+                           else [["relayer"]] if "to relay" in text
+                           else [["attestor"]] if "to attest" in text
+                           else [[]])
                 complained = False
                 for t in targets:
                     r = subprocess.run(
@@ -1108,7 +1100,7 @@ def _():
         sig = re.search(r"func \(c EVMChainConfig\) Validate\([^)]*\) error \{", cfg)
         assert sig, "EVMChainConfig.Validate is gone; this case needs rewriting"
         box.edit("cli/internal/config/config.go",
-                 sig.group(0),
+                 "func (c EVMChainConfig) Validate(validateRouterAddress bool) error {",
                  """func (c EVMChainConfig) validateRPC() error {
 	if c.RPC == "" {
 		return errPathf("rpc", "required")
@@ -1116,7 +1108,7 @@ def _():
 	return nil
 }
 
-""" + sig.group(0))
+func (c EVMChainConfig) Validate(validateRouterAddress bool) error {""")
         assert _cell(box, "config:chains", "evm.rpc") == "**required**", \
             _cell(box, "config:chains", "evm.rpc")
 

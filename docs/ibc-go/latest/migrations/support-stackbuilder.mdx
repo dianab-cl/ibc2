@@ -8,7 +8,7 @@ The StackBuilder struct is a new primitive for wiring middleware in a simpler an
 
 Refer to the [integration guide](/ibc-go/latest/ibc/middleware/integration) to understand how to use this new middleware to improve middleware wiring in the chain application setup.
 
-# Migrations for Application Developers
+## Migrations for Application Developers
 
 In order to be wired with the new StackBuilder primitive, applications and middlewares must implement new methods as part of their respective interfaces.
 
@@ -83,7 +83,7 @@ WithICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
 }
 ```
 
-# Migration for Middleware Developers
+## Migration for Middleware Developers
 
 Since Middleware is itself implement the IBC application interface, it must also implement `SetICS4Wrapper` in the same way as IBC applications.
 

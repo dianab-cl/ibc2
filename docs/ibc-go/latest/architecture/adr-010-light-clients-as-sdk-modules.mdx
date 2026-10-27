@@ -36,7 +36,7 @@ The benefit of registered callbacks opposed to interface functions is that addit
 Because the IBC applications are also SDK modules, they additionally get access to a host of functionality provided by the SDK.
 This includes: genesis import/export, migrations, query/transaction CLI commands, type registration, gRPC query registration, and message server registration.
 
-As described in [ADR 006](./adr-006-02-client-refactor.md), generalizing light client behaviour is difficult.
+As described in [ADR 006](/ibc-go/latest/architecture/adr-006-02-client-refactor), generalizing light client behaviour is difficult.
 IBC light clients will obtain greater flexibility and control via the registered SDK module approach.
 
 ## Decision

@@ -108,15 +108,18 @@
             "group": "Guides",
             "icon": "compass",
             "pages": [
-              "ibc/05-ibc-cli/03-make-a-cross-chain-gmp-call"
+              "ibc/05-ibc-cli/03-make-a-cross-chain-gmp-call",
+              "ibc/05-ibc-cli/03a-upgrade-the-router-contract",
+              "ibc/05-ibc-cli/03b-grant-change-and-revoke-a-role",
+              "ibc/05-ibc-cli/03c-rotate-an-attestor-set"
             ]
           },
           {
             "group": "Run the services",
             "icon": "server",
             "pages": [
-              "ibc/05-ibc-cli/04-run-a-standalone-relayer",
-              "ibc/05-ibc-cli/05-run-a-standalone-attestor"
+              "ibc/05-ibc-cli/04-run-a-standalone-attestor",
+              "ibc/05-ibc-cli/05-run-a-standalone-relayer"
             ]
           },
           {

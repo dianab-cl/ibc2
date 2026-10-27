@@ -51,8 +51,11 @@ IBC CLI is an all-in-one binary for deploying and running an IBC connection.
 ### Guides
 
 - [Deploy IBC and send a token](ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token.mdx): Deploy IBC on two chains and send a token.
-- [Run a standalone attestor](ibc/05-ibc-cli/05-run-a-standalone-attestor.mdx): An attestor in its own process.
-- [Run a standalone relayer](ibc/05-ibc-cli/04-run-a-standalone-relayer.mdx): Connect a relayer to an existing connection.
+- [Run a standalone attestor](ibc/05-ibc-cli/04-run-a-standalone-attestor.mdx): An attestor in its own process.
+- [Run a standalone relayer](ibc/05-ibc-cli/05-run-a-standalone-relayer.mdx): Connect a relayer to an existing connection.
+- [Upgrade an IBC contract](ibc/05-ibc-cli/03a-upgrade-the-router-contract.mdx): Contract upgrade procedure using the router as an example.
+- [Grant, change, and revoke a role](ibc/05-ibc-cli/03b-grant-change-and-revoke-a-role.mdx): Restrict relaying, rotate the signer, and revoke the old key's role.
+- [Rotate an attestor set](ibc/05-ibc-cli/03c-rotate-an-attestor-set.mdx): Replace an attestor by deploying a new client and migrating.
 
 ### Reference
 
