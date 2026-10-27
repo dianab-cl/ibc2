@@ -19,3 +19,6 @@ go.work.sum
 # Python bytecode from docs/scripts
 __pycache__/
 *.pyc
+
+# Local dev-server config for the docs preview
+.claude/launch.json
