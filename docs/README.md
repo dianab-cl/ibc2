@@ -1,8 +1,12 @@
 # IBC docs
 
+The published documentation site. `ibc/` is written here by hand; `ibc/spec/` is
+generated from `spec/` at the repo root, and `ibc-go/` is imported. See
+[AGENTS.md](AGENTS.md) before editing.
+
 ## Introduction
 
-- [What is IBC](ibc/01-introduction/01-what-is-ibc.mdx): Packets between chains, verified by on-chain light clients.
+- [What is IBC](ibc/01-introduction/01-what-is-ibc.mdx): A neutral, open source interoperability standard, its three layers, and why to use it.
 
 ## How IBC works
 
@@ -31,6 +35,10 @@ How a chain decides what to believe.
 - [Attestors](ibc/04-light-clients/02-attestors.mdx): The services that sign, and the keys trusted.
 - [The Besu QBFT and IBFT 2.0 light clients](ibc/04-light-clients/03-besu-light-client.mdx): Verify sealed Besu headers and storage proofs.
 
+## Security
+
+- [Security audits](ibc/07-security/01-audits.mdx): Every independent audit, across the protocol and its Go, Solidity, and Solana implementations.
+
 ## IBC-solidity contracts
 
 Solidity contract references.
@@ -44,15 +52,22 @@ Solidity contract references.
 
 ## IBC CLI
 
-IBC CLI is an all-in-one binary for deploying and running an IBC connection. 
+IBC CLI is an all-in-one binary for deploying and running an IBC connection.
 
 - [Overview](ibc/05-ibc-cli/01-overview.mdx): CLI architecture and its parts.
 
-### Guides
+### Tutorial
 
-- [Deploy IBC and send a token](ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token.mdx): Deploy IBC on two chains and send a token.
+- [Deploy IBC and send a token](ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token.mdx): Deploy IBC on two Besu chains and send a token.
+
+### Run the services
+
 - [Run a standalone attestor](ibc/05-ibc-cli/03-guides/01-run-a-standalone-attestor.mdx): An attestor in its own process.
 - [Run a standalone relayer](ibc/05-ibc-cli/03-guides/02-run-a-standalone-relayer.mdx): Connect a relayer to an existing connection.
+
+### Guides
+
+- [Make a cross-chain GMP call](ibc/05-ibc-cli/03-guides/03-make-a-cross-chain-gmp-call.mdx): Call a contract across chains.
 - [Upgrade an IBC contract](ibc/05-ibc-cli/03-guides/04-upgrade-the-router-contract.mdx): Contract upgrade procedure using the router as an example.
 - [Grant, change, and revoke a role](ibc/05-ibc-cli/03-guides/05-grant-change-and-revoke-a-role.mdx): Restrict relaying, rotate the signer, and revoke the old key's role.
 - [Rotate an attestor set](ibc/05-ibc-cli/03-guides/06-rotate-an-attestor-set.mdx): Replace an attestor by deploying a new client and migrating.
@@ -62,3 +77,10 @@ IBC CLI is an all-in-one binary for deploying and running an IBC connection.
 - [Configuration](ibc/05-ibc-cli/04-reference/01-configuration.mdx): Every key in `ibc.yml`.
 - [CLI commands](ibc/05-ibc-cli/04-reference/02-cli-commands.mdx): Every command and flag.
 - [API](ibc/05-ibc-cli/04-reference/03-api.mdx): The gRPC services.
+
+## Generated and imported
+
+Not edited here. Both are published on the site alongside the pages above.
+
+- [`ibc/spec/`](ibc/spec): 42 pages generated from `spec/` at the repo root by `scripts/specgen.py`. Edit the source, then regenerate.
+- [`ibc-go/`](ibc-go): 236 pages imported for the Go implementation, in `latest/` and the frozen `v10.1.x/`.

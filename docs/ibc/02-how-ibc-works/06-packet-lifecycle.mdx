@@ -22,6 +22,10 @@ Four calls move a packet in IBC:
 
 A relayer stands between every pair of steps. Each chain learns what the other wrote only through a proof its own [client](/ibc/02-how-ibc-works/04-clients-and-counterparties) verifies, and the store keeps only a hash of the packet, so the send event is what carries its fields to a relayer. That client has to be current for the proof to verify. So a relayer packs `updateClient` into the same transaction, ahead of the call it is relaying.
 
+![A packet's two endings: delivered and acknowledged, or timed out with nothing received](/mintlify/images/ibc/ibc-packet-lifecycle.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 sequenceDiagram
     participant App as Sending application
@@ -56,6 +60,7 @@ sequenceDiagram
         Source->>App: onTimeoutPacket
     end
 ```
+*/}
 
 ## Sending a packet
 
@@ -120,4 +125,4 @@ The receipt is written before the receiving application runs, in the same transa
 
 A packet can also settle never. `recvPacket` wraps the receiving application's callback, so a revert there carrying a reason becomes an error acknowledgement. `ackPacket` and `timeoutPacket` call the sending application with no such wrapper. If that callback always reverts, the call reverts with it, the commitment is never deleted, and neither ending can complete.
 
-The [tutorial](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) sends a packet through this lifecycle and reports where it got to.
+The [tutorial](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token) sends a packet through this lifecycle and reports where it got to.

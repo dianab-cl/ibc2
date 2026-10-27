@@ -72,12 +72,17 @@ The derivation also runs backwards. GMP maps a deployed account to its identifie
 
 An account calls nothing on its own. GMP is the only outside caller it obeys, so every call it makes must come from a packet.
 
+![A GMP packet resolving to a destination account that calls the target contract](/mintlify/images/ibc/ibc-gmp.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart LR
     S["Sender<br/>source chain"] -. packet .-> G["GMP<br/>destination chain"]
     G --> A["Destination account<br/>client + sender + salt"]
     A -- call data --> T["Target contract"]
 ```
+*/}
 
 ## Executing the call on the destination
 

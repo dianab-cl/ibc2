@@ -61,10 +61,84 @@ version switcher appears on the ibc-go tab alone.
   numbering them would mean changing the canonical `spec/` or diverging from
   the upstream the importer re-runs against.
 
-  After any rename run `node docs/mintlify/scripts/check-nav.js` and
+  After any rename: update `docs.json`, add a `redirects` entry, fix inbound
+  links, then run `node docs/mintlify/scripts/check-nav.js` and
   `npx --yes mint@4 broken-links`.
 - There is no `next/` tier. Document unreleased features in `latest/` with a
   version callout.
+- **Diagrams under `ibc/` are PNGs with their mermaid source kept beside them.**
+  The pages render an exported image from `mintlify/images/ibc/`, and the
+  mermaid that image was drawn from sits directly below it, commented out:
+
+  ```mdx
+  ![alt text](/mintlify/images/ibc/ibc-core-router.png)
+
+  {/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+  {/*
+  ```mermaid
+  flowchart LR
+    ...
+  ```
+  */}
+  ```
+
+  **The mermaid is the source of truth, and the two drift silently.** Change
+  what a diagram shows and you must edit the mermaid *and* re-export the PNG;
+  nothing checks that they agree, and a commented block is invisible to
+  `mint validate`, so a broken diagram source will not fail the build.
+
+  Use `{/* */}`, never `<!-- -->` — MDX parses an HTML comment as JSX and the
+  build fails.
+
+  Five diagrams in `ibc/06-ibc-solidity-contracts/` have no exported image yet
+  and still render as live mermaid. Leave them that way until one exists.
+  `ibc/spec/` and `ibc-go/` are generated and imported, so their mermaid is not
+  converted.
+
+## Links
+
+Internal links are absolute from the docs root, with no `.mdx`:
+
+```text
+ok:    /ibc/02-how-ibc-works/03-core-router-and-store
+wrong: ./03-core-router-and-store.mdx
+wrong: 03-core-router-and-store
+```
+
+`mint broken-links` does not resolve relative targets, so a wrong one fails
+silently. The 144 relative links in `ibc/spec/` come from the ICS sources and
+are not rewritten.
+
+A nav entry pointing off-site is an `.mdx` file with a `url`, registered in
+`docs.json` like any page — see `ibc/repos/`:
+
+```mdx
+---
+title: "cosmos/ibc"
+url: "https://github.com/cosmos/ibc"
+icon: "github"
+---
+```
+
+Redirects go in the top-level `redirects` array in `docs.json`: root-relative
+`source` and `destination`, no `.mdx`, no `#` or `?`, no cycles. Wildcards work
+(`/ibc/old/:slug*`).
+
+### Anchors
+
+Measured against this build, not Mintlify's docs. Lowercased, spaces to `-`,
+adjacent separators collapsed.
+
+| In the heading | In the anchor | Example |
+|---|---|---|
+| `.` | `-` | `v0.53.x` → `#v0-53-x` |
+| `? ! ( ) :` | dropped | `Rate limit (beta)` → `#rate-limit-beta` |
+| `& + = @ # $ % /` | kept | `Gas & Fees` → `#gas-&-fees` |
+| `—` | kept | `Em — dash` → `#em-—-dash` |
+| backticks, `*` | stripped as markup first | `` Back`tick` `` → `#backtick-here` |
+
+`/` stays literal in the id; percent-encode it in a link (`#x%2Fparams`).
+Copy anchors from a render rather than deriving them.
 
 ## Generators
 

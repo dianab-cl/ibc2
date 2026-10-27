@@ -7,14 +7,18 @@ IBC lets two independent chains exchange messages; each side verifies for itself
 
 A single cross-chain message relies on a set of on-chain and off-chain components working together:
 
-- **Applications** define what a message means and what happens when it arrives.
-- **Packets** are the containers that carry a message.
-- **IBC core** is the on-chain router and store: it routes packets and records their state.
-- **Relayers** are off-chain services that carry packets and proofs between chains.
-- **Clients** are the on-chain verification layer: a light client of each counterparty that checks claims about its state.
+- **[Applications](/ibc/02-how-ibc-works/02-packets-and-applications#applications)** define what a message means and what happens when it arrives.
+- **[Packets](/ibc/02-how-ibc-works/02-packets-and-applications#the-packet)** are the containers that carry a message.
+- **[IBC core](/ibc/02-how-ibc-works/03-core-router-and-store)** is the on-chain router and store: it routes packets and records their state.
+- **[Relayers](/ibc/02-how-ibc-works/05-relayer)** are off-chain services that carry packets and proofs between chains.
+- **[Clients](/ibc/02-how-ibc-works/04-clients-and-counterparties)** are the on-chain verification layer: a light client of each counterparty that checks claims about its state.
 
 This page introduces each one, then walks a packet from send to settlement.
 
+![Two chains, each with an application, IBC core, and a light client of the other, joined by a relayer](/mintlify/images/ibc/ibc-architecture.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart LR
   subgraph chainA["Chain A"]
@@ -37,6 +41,7 @@ flowchart LR
   routerA <-->|"packets and proofs"| relayer
   relayer <-->|"packets and proofs"| routerB
 ```
+*/}
 
 Two chains implement the IBC stack with applications, the IBC core, and a client. On each chain the router records its client's counterparty, the client identifier on the other side. That mirrored pair of clients is what creates a connection.
 
@@ -93,6 +98,10 @@ Every client answers the same interface, and each one implements verification th
 
 IBC packets travel in two legs. The first leg delivers the packet to the destination chain. The second leg returns an acknowledgement (the destination application's answer) to the sender. Every cross chain step is carried by a relayer:
 
+![A packet delivered to chain B and its acknowledgement returned to chain A](/mintlify/images/ibc/ibc-packet-flow.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 sequenceDiagram
     participant appA as Application on chain A
@@ -115,16 +124,17 @@ sequenceDiagram
     Note over chainA: the client of chain B verifies, commitment deleted
     chainA->>appA: hand back the acknowledgement
 ```
+*/}
 
 1. An application calls the router to send a packet.
-2. The router fills in the destination client from the counterparty registered for the source client, assigns the next sequence number, writes the commitment, and emits the send event.
+2. The router fills in the destination client from the [counterparty registered for the source client](/ibc/02-how-ibc-works/04-clients-and-counterparties#connecting-two-chains), assigns the next sequence number, writes the [commitment](/ibc/02-how-ibc-works/03-core-router-and-store#the-store), and emits the send event.
 3. The relayer waits for the send transaction to be final on the source chain.
-4. It gathers the proof of that commitment that the destination chain's client requires.
+4. It gathers [the proof of that commitment](/ibc/02-how-ibc-works/04-clients-and-counterparties#what-a-light-client-verifies) that the destination chain's client requires.
 5. It submits the packet and that proof to the destination router in one transaction.
-6. The destination client is brought up to a height that covers the send, then verifies the commitment against the proof at that height.
-7. The router writes a receipt, calls the application named by the payload's destination port, and commits that application's answer as an acknowledgement.
+6. The destination client is [brought up to a height](/ibc/02-how-ibc-works/04-clients-and-counterparties#updating-a-client) that covers the send, then verifies the commitment against the proof at that height.
+7. The router writes a receipt, calls the application named by the payload's [destination port](/ibc/02-how-ibc-works/02-packets-and-applications#applications), and commits that application's answer as an acknowledgement.
 8. The relayer gathers the matching proof from the destination chain and submits the acknowledgement to the source router, where the source chain's client verifies the destination chain wrote it.
-9. The source router deletes the commitment and calls the sending application back with the acknowledgement bytes.
+9. The source router deletes the commitment and calls the sending application back with the [acknowledgement bytes](/ibc/02-how-ibc-works/06-packet-lifecycle#acknowledging-on-the-source-chain).
 
 A failure still comes back as an answer. When the destination application fails, the router substitutes a reserved error acknowledgement for its bytes, and that reaches the sender at step 9. A few failures produce no acknowledgement at all, where the router rejects the whole receive. One of those leaves the packet to be relayed again, and the rest leave a timeout as the only ending. See [acknowledgements and callback failures](/ibc/06-ibc-solidity-contracts/02-ics26-router#acknowledgements-and-callback-failures) for more information.
 
@@ -132,4 +142,4 @@ A packet that never arrives ends the other way. Once its timeout has passed, the
 
 Every chain trusts only what its own client has verified. Neither side trusts the relayer, and neither takes the other's claims directly.
 
-The [tutorial](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) brings up every component described above and sends tokens between two chains.
+The [tutorial](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token) brings up every component described above and sends tokens between two chains.

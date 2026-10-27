@@ -13,6 +13,10 @@ A client does not follow the counterparty's whole block history to do this. Inst
 
 For packets to move both between chains, each chain holds a client of the other. Each client records the other as its counterparty. That mirrored pair is a connection, and it is what lets two chains verify each other.
 
+![Each chain's store proved to the counterparty's light client, and each client naming the other as its counterparty](/mintlify/images/ibc/ibc-clients-counterparties.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart LR
   subgraph A["Chain A"]
@@ -26,6 +30,7 @@ flowchart LR
   STA -. "proof of what A wrote" .-> CB
   STB -. "proof of what B wrote" .-> CA
 ```
+*/}
 
 Each client lives under a client identifier in the [router's](/ibc/02-how-ibc-works/03-core-router-and-store) client registry, which is how the router reaches it. In IBC-solidity each registry entry is two things: the address of the light-client contract that does the verifying, and a record of the counterparty client on the counterparty chain.
 

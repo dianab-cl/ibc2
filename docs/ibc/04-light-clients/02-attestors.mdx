@@ -15,6 +15,10 @@ The light client needs those signatures because it stores no commitment root. Ev
 
 Attestation is pull-based. An attestor signs when a relayer asks, and the relayer aggregates the signatures it gathers into one proof.
 
+![Relayer asking attestors for signed claims and submitting the proof](/mintlify/images/ibc/ibc-attestors.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart LR
     A["Attested chain"]
@@ -30,6 +34,7 @@ flowchart LR
     T2 -->|signed claim| R
     R -->|proof| C
 ```
+*/}
 
 ## What an attestor signs
 

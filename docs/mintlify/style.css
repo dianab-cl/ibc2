@@ -205,23 +205,29 @@ pre, pre code, code {
 
    It takes the same --nav-accent as the sidebar highlight, so the button and
    the nav shift together section by section and there is one value to change.
-   Fallback is the brand blue, for when custom.js has not run. */
-header a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"] > span.absolute,
-#navbar a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"] > span.absolute {
+   Fallback is the brand blue, for when custom.js has not run.
+
+   Matched on that span rather than on the button's href. An earlier version
+   keyed on `href$="…/02-tutorial-deploy-ibc-and-send-a-token"`, and when the
+   tutorial moved under `02-tutorial/` the selector stopped matching and the
+   button silently went black-on-black. `span.absolute.bg-primary-dark` is
+   unique to this CTA in the navbar and survives re-pointing it. */
+header a > span.absolute.bg-primary-dark,
+#navbar a > span.absolute.bg-primary-dark {
   background-color: var(--nav-accent, #40b3ff);
   transition: background-color 120ms ease;
 }
 
-header a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"]:hover > span.absolute,
-#navbar a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"]:hover > span.absolute {
+header a:hover > span.absolute.bg-primary-dark,
+#navbar a:hover > span.absolute.bg-primary-dark {
   background-color: color-mix(in srgb, var(--nav-accent, #40b3ff) 82%, white);
   opacity: 1;
 }
 
-header a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"],
-header a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"] *,
-#navbar a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"],
-#navbar a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"] * {
+header a:has(> span.absolute.bg-primary-dark),
+header a:has(> span.absolute.bg-primary-dark) *,
+#navbar a:has(> span.absolute.bg-primary-dark),
+#navbar a:has(> span.absolute.bg-primary-dark) * {
   color: var(--nav-accent-ink, #0e0e0e);
   font-weight: 600;
 }

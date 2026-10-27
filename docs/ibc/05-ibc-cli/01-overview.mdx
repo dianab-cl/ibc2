@@ -13,6 +13,10 @@ It consists of three parts:
 
 Each of these services is configurable under a single configuration file. Proof aggregation and transaction-building logic are internalized in the relayer. Relayers and attestors can be run in a single process or standalone using the CLI.  IBC CLI also handles contract deployment and configuration for the operator.
 
+![One ibc.yml configuring the relayer, attestor, and deployment halves of the ibc binary](/mintlify/images/ibc/ibc-cli-binary.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart LR
     subgraph BIN["ibc binary"]
@@ -24,6 +28,7 @@ flowchart LR
     CFG --> A
     CFG --> D
 ```
+*/}
 
 ## Deployment
 
@@ -52,6 +57,10 @@ Its work starts after an application has already sent a packet. The relayer read
 
 [The Relayer page](/ibc/02-how-ibc-works/05-relayer) covers what a relayer is for and what it is trusted with.
 
+![Relayer internals: relay API, store, delivery, and prover, between the source and destination chains](/mintlify/images/ibc/ibc-cli-relayer.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart TB
     CALLER["caller"] -->|"chain ID and tx hash"| API["relay API"]
@@ -63,6 +72,7 @@ flowchart TB
     DELIV -->|"one transaction per batch"| DST["destination chain"]
     DELIV -.->|"records progress"| STORE
 ```
+*/}
 
 ### Starting a relay
 
@@ -113,6 +123,10 @@ An attestor's finality offset decides how far behind the chain head it signs.
 
 One process can host several attestors, each with its own signer and one chain it watches. That is what lets a single process attest for several chains at once.
 
+![One ibc attestor process serving three named attestors, each with its own signer and chain RPC](/mintlify/images/ibc/ibc-cli-attestor.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart LR
     GRPC["gRPC :3000"]
@@ -128,6 +142,7 @@ flowchart LR
     A2 --> C2["chain B RPC"]
     A3 --> C3["chain C RPC"]
 ```
+*/}
 IBC CLI allows you to run an attestor as its own standalone process, or in-process with the relayer. 
 > **Warning:** Run one attestor per process in security-critical deployments.
 

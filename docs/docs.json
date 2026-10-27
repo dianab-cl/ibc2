@@ -170,11 +170,17 @@
             ]
           },
           {
+            "group": "Run the services",
+            "icon": "server",
+            "pages": [
+              "ibc/05-ibc-cli/03-guides/01-run-a-standalone-attestor",
+              "ibc/05-ibc-cli/03-guides/02-run-a-standalone-relayer"
+            ]
+          },
+          {
             "group": "Guides",
             "icon": "compass",
             "pages": [
-              "ibc/05-ibc-cli/03-guides/01-run-a-standalone-attestor",
-              "ibc/05-ibc-cli/03-guides/02-run-a-standalone-relayer",
               "ibc/05-ibc-cli/03-guides/03-make-a-cross-chain-gmp-call",
               "ibc/05-ibc-cli/03-guides/04-upgrade-the-router-contract",
               "ibc/05-ibc-cli/03-guides/05-grant-change-and-revoke-a-role",
@@ -932,10 +938,6 @@
           {
             "label": "cosmos/ibc-contracts",
             "href": "https://github.com/cosmos/ibc-contracts"
-          },
-          {
-            "label": "Cosmos GitHub",
-            "href": "https://github.com/cosmos"
           }
         ]
       },

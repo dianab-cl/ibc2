@@ -1,29 +1,32 @@
 ---
 title: "IBC"
 sidebarTitle: "Home"
-description: "Packets between chains, verified by on-chain light clients. The protocol, its Solidity contracts, the IBC CLI, and the Go implementation."
+"og:description": "A neutral, open source, battle-tested interoperability protocol for connecting independent ledgers."
+"twitter:description": "A neutral, open source, battle-tested interoperability protocol for connecting independent ledgers."
 ---
 
-IBC moves packets between chains and proves, on each side, that what arrived is
-what was sent. This site covers the protocol, the Solidity contracts that run it
-on a chain, the CLI that deploys and operates it, the Go implementation, and the
-specifications all of them follow.
+The Inter-Blockchain Communication Protocol is a neutral, open source
+interoperability standard for digital ledger communication. It allows ledgers to
+exchange any type of information encoded in bytes. IBC connections are
+peer-to-peer; ledgers that use IBC communicate via self-hosted infrastructure
+without a third-party intermediary. IBC is offered under an open source license
+and does not have any in-protocol fees or token usage.
 
 <CardGroup cols={2}>
   <Card title="Learn how IBC works" icon="chevrons-left-right-ellipsis" href="/ibc/02-how-ibc-works/01-overview">
-    The components that carry one provable packet between two chains.
+    Discover the inner workings of IBC and how verifiable packets move across chains
   </Card>
-  <Card title="Start building: run the tutorial" icon="play" href="/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token">
-    Bring up two chains, deploy IBC on both, and move a token from one to the other.
+  <Card title="Start building: Run the tutorial" icon="play" href="/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token">
+    Run two Besu chains, configure and deploy IBC contracts, create a connection, and transfer tokens.
   </Card>
   <Card title="IBC-Solidity" icon="file-code" href="/ibc/06-ibc-solidity-contracts/01-overview">
-    The Solidity contracts that make up IBC on a chain, what each is for, and who deploys it.
+    Developer reference for contracts that run IBC on an EVM chain
   </Card>
   <Card title="IBC CLI" icon="terminal" href="/ibc/05-ibc-cli/01-overview">
-    One binary that deploys IBC onto a chain, then runs the relayer and attestors that carry packets across it.
+    The all-in-one tool for configuring, deploying, and running an IBC connection along with relayers and attestors
   </Card>
-  <Card title="Packet lifecycle" icon="refresh-cw" href="/ibc/02-how-ibc-works/06-packet-lifecycle">
-    A packet reaches one of two provable endings: delivered and acknowledged, or proven timed out.
+  <Card title="What is IBC?" icon="book-open" href="/ibc/01-introduction/01-what-is-ibc">
+    An introduction to the protocol, its three layers, and why to build on it
   </Card>
   <Card title="IBC-Go" icon="code" href="/ibc-go/latest/intro">
     The Go implementation: core, applications, light clients, middleware and migration guides.

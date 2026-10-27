@@ -121,6 +121,10 @@ Each refund waits on a relayer. The amount stays burned and the record stays ope
 
 A successful mint whose acknowledgement is never relayed only leaves a stale pending transfer on the source chain. Both chains already hold the right supply at that point, because the burn and the mint have both happened, and the acknowledgement only clears the record.
 
+![An IFT transfer burning at the source and either minting at the destination or refunding the sender](/mintlify/images/ibc/ibc-ift-transfer.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart TD
     A["Holder starts a transfer"] --> B["Source contract burns the amount and stores a pending transfer"]
@@ -132,6 +136,7 @@ flowchart TD
     E --> H["Source contract refunds the sender"]
     F --> H
 ```
+*/}
 
 The [tutorial](/ibc/05-ibc-cli/02-tutorial/01-deploy-ibc-and-send-a-token) deploys an IFT and moves it between two chains.
 Visit the [IFT contract reference](/ibc/06-ibc-solidity-contracts/04-ift-contracts) to learn more about the Solidity implementation.

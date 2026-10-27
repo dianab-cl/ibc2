@@ -24,6 +24,10 @@ For what each operation checks, and the order they run in, see the [packet lifec
 
 The router owns an application registry and a client registry. It finds every application and every client it needs through them.
 
+![The router's application registry, client registry, and store, between applications, relayers, and light clients](/mintlify/images/ibc/ibc-core-router.png)
+
+{/* Diagram source. Changed the page? Update this and re-export the PNG. */}
+{/*
 ```mermaid
 flowchart LR
     app["Applications"]
@@ -42,6 +46,7 @@ flowchart LR
     P -.->|"finds"| app
     C -.->|"finds"| lc
 ```
+*/}
 
 The application registry maps a port to its application, and the client registry maps a client identifier to the light client that verifies a counterparty chain, along with the [counterparty information](/ibc/02-how-ibc-works/04-clients-and-counterparties) recorded for it. Between them the router can find which application an arriving payload belongs to, and which client can verify the proof that came with it.
 

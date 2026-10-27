@@ -95,7 +95,7 @@ The CCV module is initialized through the `InitGenesis` method when the chain is
     If `transferChannelId == ""`, a new token transfer channel is created on top of the same connection as the CCV channel.
 
 The provider CCV module handles governance proposals to add new consumer chains and to remove existing consumer chains. 
-While the structure of governance proposals is specific to every ABCI application (for an example, see the `Proposal` interface in the [Governance module documentation](https://docs.cosmos.network/main/build/modules/gov) of Cosmos SDK),
+While the structure of governance proposals is specific to every ABCI application (for an example, see the `Proposal` interface in the [Governance module documentation](https://docs.cosmos.network/sdk/latest/modules/gov) of Cosmos SDK),
 this specification expects the following fields to be part of the proposals to add new consumer chains (i.e., `ConsumerAdditionProposal`) and to remove existing ones (i.e., `ConsumerRemovalProposal`):
 
   ```typescript
@@ -141,7 +141,7 @@ interface CCVHandshakeMetadata {
 }
 ```
 
-This specification assumes that the provider CCV module has access to the address of the distribution module account through the `GetDistributionAccountAddress()` method. For an example, take a look at the [auth module](https://docs.cosmos.network/main/build/modules/auth) of Cosmos SDK. 
+This specification assumes that the provider CCV module has access to the address of the distribution module account through the `GetDistributionAccountAddress()` method. For an example, take a look at the [auth module](https://docs.cosmos.network/sdk/latest/modules/auth) of Cosmos SDK. 
 
 ## CCV Packets
 
