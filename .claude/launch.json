@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "docs",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd docs && npx --yes mint@4 dev --port 3000"],
+      "port": 3000
+    }
+  ]
+}

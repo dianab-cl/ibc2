@@ -20,12 +20,13 @@
     }
   },
   "favicon": {
-    "light": "/mintlify/assets/brand/cosmos-dark.svg",
-    "dark": "/mintlify/assets/brand/cosmos.svg"
+    "light": "/mintlify/assets/brand/ibc-dark.svg",
+    "dark": "/mintlify/assets/brand/ibc.svg"
   },
   "logo": {
-    "light": "/mintlify/assets/brand/cosmos-wordmark-dark.svg",
-    "dark": "/mintlify/assets/brand/cosmos-wordmark.svg"
+    "light": "/mintlify/assets/brand/ibc-wordmark-dark.svg",
+    "dark": "/mintlify/assets/brand/ibc-wordmark.svg",
+    "href": "/"
   },
   "contextual": {
     "options": [
@@ -46,6 +47,7 @@
         "groups": [
           {
             "group": "Introduction",
+            "icon": "book-open",
             "pages": [
               "index",
               "ibc/01-introduction/01-what-is-ibc"
@@ -53,6 +55,7 @@
           },
           {
             "group": "How IBC works",
+            "icon": "workflow",
             "pages": [
               "ibc/02-how-ibc-works/01-overview",
               "ibc/02-how-ibc-works/02-packets-and-applications",
@@ -64,14 +67,15 @@
           },
           {
             "group": "Applications",
+            "icon": "blocks",
             "pages": [
               "ibc/03-applications/01-gmp",
-              "ibc/03-applications/02-ift",
-              "ibc/03-applications/03-make-a-cross-chain-gmp-call"
+              "ibc/03-applications/02-ift"
             ]
           },
           {
             "group": "Light clients",
+            "icon": "shield-check",
             "pages": [
               "ibc/04-light-clients/01-attestation-light-client",
               "ibc/04-light-clients/02-attestors",
@@ -80,6 +84,7 @@
           },
           {
             "group": "Repositories",
+            "icon": "folder-git-2",
             "pages": [
               "ibc/repos/learn-ibc",
               "ibc/repos/learn-ibc-go",
@@ -93,28 +98,39 @@
         "groups": [
           {
             "group": "Get started",
+            "icon": "rocket",
             "pages": [
               "ibc/05-ibc-cli/01-overview",
               "ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"
             ]
           },
           {
-            "group": "Run the services",
+            "group": "Guides",
+            "icon": "compass",
             "pages": [
-              "ibc/05-ibc-cli/03-run-a-standalone-relayer",
-              "ibc/05-ibc-cli/04-run-a-standalone-attestor"
+              "ibc/05-ibc-cli/03-make-a-cross-chain-gmp-call"
+            ]
+          },
+          {
+            "group": "Run the services",
+            "icon": "server",
+            "pages": [
+              "ibc/05-ibc-cli/04-run-a-standalone-relayer",
+              "ibc/05-ibc-cli/05-run-a-standalone-attestor"
             ]
           },
           {
             "group": "Reference",
+            "icon": "book",
             "pages": [
-              "ibc/05-ibc-cli/05-configuration",
-              "ibc/05-ibc-cli/06-cli-commands",
-              "ibc/05-ibc-cli/07-api"
+              "ibc/05-ibc-cli/06-configuration",
+              "ibc/05-ibc-cli/07-cli-commands",
+              "ibc/05-ibc-cli/08-api"
             ]
           },
           {
             "group": "Repositories",
+            "icon": "folder-git-2",
             "pages": [
               "ibc/repos/cli-ibc"
             ]
@@ -126,6 +142,7 @@
         "groups": [
           {
             "group": "Contracts",
+            "icon": "file-code",
             "pages": [
               "ibc/06-ibc-solidity-contracts/01-overview",
               "ibc/06-ibc-solidity-contracts/02-ics26-router",
@@ -137,6 +154,7 @@
           },
           {
             "group": "Repositories",
+            "icon": "folder-git-2",
             "pages": [
               "ibc/repos/solidity-ibc-contracts"
             ]
@@ -151,16 +169,19 @@
             "groups": [
               {
                 "group": "Introduction",
+                "icon": "book-open",
                 "pages": [
                   "ibc-go/latest/intro"
                 ]
               },
               {
                 "group": "IBC Core",
+                "icon": "box",
                 "pages": [
                   "ibc-go/latest/ibc/overview",
                   {
                     "group": "Core Concepts",
+                    "icon": "lightbulb",
                     "pages": [
                       "ibc-go/latest/ibc/best-practices",
                       "ibc-go/latest/ibc/integration",
@@ -170,6 +191,7 @@
                   },
                   {
                     "group": "Apps",
+                    "icon": "app-window",
                     "pages": [
                       "ibc-go/latest/ibc/apps/ibcv2apps",
                       "ibc-go/latest/ibc/apps/apps",
@@ -183,6 +205,7 @@
                   },
                   {
                     "group": "Middleware",
+                    "icon": "layers",
                     "pages": [
                       "ibc-go/latest/ibc/middleware/overview",
                       "ibc-go/latest/ibc/middleware/develop",
@@ -192,6 +215,7 @@
                   },
                   {
                     "group": "Upgrades",
+                    "icon": "arrow-up",
                     "pages": [
                       "ibc-go/latest/ibc/upgrades/intro",
                       "ibc-go/latest/ibc/upgrades/quick-guide",
@@ -203,9 +227,11 @@
               },
               {
                 "group": "IBC Migrations",
+                "icon": "arrow-right-left",
                 "pages": [
                   {
                     "group": "Version Upgrades",
+                    "icon": "git-branch",
                     "pages": [
                       "ibc-go/latest/migrations/v11-to-v11-1",
                       "ibc-go/latest/migrations/v10-to-v11-1",
@@ -225,6 +251,7 @@
                   },
                   {
                     "group": "Additional Migration Guides",
+                    "icon": "map",
                     "pages": [
                       "ibc-go/latest/migrations/sdk-to-v1",
                       "ibc-go/latest/migrations/support-denoms-with-slashes",
@@ -235,9 +262,11 @@
               },
               {
                 "group": "IBC Light Clients",
+                "icon": "shield-check",
                 "pages": [
                   {
                     "group": "Developer Guide",
+                    "icon": "code",
                     "pages": [
                       "ibc-go/latest/light-clients/developer-guide/overview",
                       "ibc-go/latest/light-clients/developer-guide/light-client-module",
@@ -253,12 +282,14 @@
                   },
                   {
                     "group": "Attestation",
+                    "icon": "badge-check",
                     "pages": [
                       "ibc-go/latest/light-clients/attestation/attestation-light-client"
                     ]
                   },
                   {
                     "group": "Localhost",
+                    "icon": "monitor",
                     "pages": [
                       "ibc-go/latest/light-clients/localhost/overview",
                       "ibc-go/latest/light-clients/localhost/integration",
@@ -269,6 +300,7 @@
                   },
                   {
                     "group": "Solo Machine",
+                    "icon": "cpu",
                     "pages": [
                       "ibc-go/latest/light-clients/solomachine/solomachine",
                       "ibc-go/latest/light-clients/solomachine/concepts",
@@ -278,12 +310,14 @@
                   },
                   {
                     "group": "Tendermint",
+                    "icon": "boxes",
                     "pages": [
                       "ibc-go/latest/light-clients/tendermint/overview"
                     ]
                   },
                   {
                     "group": "WASM",
+                    "icon": "binary",
                     "pages": [
                       "ibc-go/latest/light-clients/wasm/overview",
                       "ibc-go/latest/light-clients/wasm/concepts",
@@ -300,10 +334,12 @@
               },
               {
                 "group": "IBC Apps",
+                "icon": "blocks",
                 "pages": [
                   "ibc-go/latest/apps/gmp",
                   {
                     "group": "Interchain Accounts",
+                    "icon": "users",
                     "pages": [
                       "ibc-go/latest/apps/interchain-accounts/overview",
                       "ibc-go/latest/apps/interchain-accounts/development",
@@ -316,6 +352,7 @@
                       "ibc-go/latest/apps/interchain-accounts/active-channels",
                       {
                         "group": "Legacy",
+                        "icon": "archive",
                         "pages": [
                           "ibc-go/latest/apps/interchain-accounts/legacy/auth-modules",
                           "ibc-go/latest/apps/interchain-accounts/legacy/integration",
@@ -326,6 +363,7 @@
                   },
                   {
                     "group": "Transfer",
+                    "icon": "send",
                     "pages": [
                       "ibc-go/latest/apps/transfer/overview",
                       "ibc-go/latest/apps/transfer/state",
@@ -343,9 +381,11 @@
               },
               {
                 "group": "IBC Middleware",
+                "icon": "layers",
                 "pages": [
                   {
                     "group": "Callbacks",
+                    "icon": "repeat",
                     "pages": [
                       "ibc-go/latest/middleware/callbacks/overview",
                       "ibc-go/latest/middleware/callbacks/integration",
@@ -358,6 +398,7 @@
                   },
                   {
                     "group": "Packet Forward Middleware",
+                    "icon": "forward",
                     "pages": [
                       "ibc-go/latest/middleware/packet-forward-middleware/overview",
                       "ibc-go/latest/middleware/packet-forward-middleware/integration",
@@ -366,6 +407,7 @@
                   },
                   {
                     "group": "Rate Limit Middleware",
+                    "icon": "gauge",
                     "pages": [
                       "ibc-go/latest/middleware/rate-limit-middleware/overview",
                       "ibc-go/latest/middleware/rate-limit-middleware/integration",
@@ -377,12 +419,14 @@
               },
               {
                 "group": "Security",
+                "icon": "lock",
                 "pages": [
                   "ibc-go/latest/security-audits"
                 ]
               },
               {
                 "group": "Architecture Decision Records",
+                "icon": "scroll-text",
                 "pages": [
                   "ibc-go/latest/architecture/README",
                   "ibc-go/latest/architecture/adr-001-coin-source-tracing",
@@ -404,12 +448,14 @@
               },
               {
                 "group": "Changelog",
+                "icon": "rotate-ccw",
                 "pages": [
                   "ibc-go/latest/changelog/release-notes"
                 ]
               },
               {
                 "group": "Repositories",
+                "icon": "folder-git-2",
                 "pages": [
                   "ibc-go/latest/repos/go-ibc-go"
                 ]
@@ -421,16 +467,19 @@
             "groups": [
               {
                 "group": "Introduction",
+                "icon": "book-open",
                 "pages": [
                   "ibc-go/v10.1.x/intro"
                 ]
               },
               {
                 "group": "IBC Core",
+                "icon": "box",
                 "pages": [
                   "ibc-go/v10.1.x/ibc/overview",
                   {
                     "group": "Core Concepts",
+                    "icon": "lightbulb",
                     "pages": [
                       "ibc-go/v10.1.x/ibc/best-practices",
                       "ibc-go/v10.1.x/ibc/integration",
@@ -440,6 +489,7 @@
                   },
                   {
                     "group": "Apps",
+                    "icon": "app-window",
                     "pages": [
                       "ibc-go/v10.1.x/ibc/apps/ibcv2apps",
                       "ibc-go/v10.1.x/ibc/apps/apps",
@@ -453,6 +503,7 @@
                   },
                   {
                     "group": "Middleware",
+                    "icon": "layers",
                     "pages": [
                       "ibc-go/v10.1.x/ibc/middleware/overview",
                       "ibc-go/v10.1.x/ibc/middleware/develop",
@@ -462,6 +513,7 @@
                   },
                   {
                     "group": "Upgrades",
+                    "icon": "arrow-up",
                     "pages": [
                       "ibc-go/v10.1.x/ibc/upgrades/intro",
                       "ibc-go/v10.1.x/ibc/upgrades/quick-guide",
@@ -473,9 +525,11 @@
               },
               {
                 "group": "IBC Migrations",
+                "icon": "arrow-right-left",
                 "pages": [
                   {
                     "group": "Version Upgrades",
+                    "icon": "git-branch",
                     "pages": [
                       "ibc-go/v10.1.x/migrations/v8_1-to-v10",
                       "ibc-go/v10.1.x/migrations/v8-to-v8_1",
@@ -492,6 +546,7 @@
                   },
                   {
                     "group": "Additional Migration Guides",
+                    "icon": "map",
                     "pages": [
                       "ibc-go/v10.1.x/migrations/sdk-to-v1",
                       "ibc-go/v10.1.x/migrations/support-denoms-with-slashes"
@@ -501,9 +556,11 @@
               },
               {
                 "group": "IBC Light Clients",
+                "icon": "shield-check",
                 "pages": [
                   {
                     "group": "Developer Guide",
+                    "icon": "code",
                     "pages": [
                       "ibc-go/v10.1.x/light-clients/developer-guide/overview",
                       "ibc-go/v10.1.x/light-clients/developer-guide/light-client-module",
@@ -519,6 +576,7 @@
                   },
                   {
                     "group": "Localhost",
+                    "icon": "monitor",
                     "pages": [
                       "ibc-go/v10.1.x/light-clients/localhost/overview",
                       "ibc-go/v10.1.x/light-clients/localhost/integration",
@@ -529,6 +587,7 @@
                   },
                   {
                     "group": "Solo Machine",
+                    "icon": "cpu",
                     "pages": [
                       "ibc-go/v10.1.x/light-clients/solomachine/solomachine",
                       "ibc-go/v10.1.x/light-clients/solomachine/concepts",
@@ -538,12 +597,14 @@
                   },
                   {
                     "group": "Tendermint",
+                    "icon": "boxes",
                     "pages": [
                       "ibc-go/v10.1.x/light-clients/tendermint/overview"
                     ]
                   },
                   {
                     "group": "WASM",
+                    "icon": "binary",
                     "pages": [
                       "ibc-go/v10.1.x/light-clients/wasm/overview",
                       "ibc-go/v10.1.x/light-clients/wasm/concepts",
@@ -560,9 +621,11 @@
               },
               {
                 "group": "IBC Apps",
+                "icon": "blocks",
                 "pages": [
                   {
                     "group": "Interchain Accounts",
+                    "icon": "users",
                     "pages": [
                       "ibc-go/v10.1.x/apps/interchain-accounts/overview",
                       "ibc-go/v10.1.x/apps/interchain-accounts/development",
@@ -575,6 +638,7 @@
                       "ibc-go/v10.1.x/apps/interchain-accounts/active-channels",
                       {
                         "group": "Legacy",
+                        "icon": "archive",
                         "pages": [
                           "ibc-go/v10.1.x/apps/interchain-accounts/legacy/auth-modules",
                           "ibc-go/v10.1.x/apps/interchain-accounts/legacy/integration",
@@ -585,6 +649,7 @@
                   },
                   {
                     "group": "Transfer",
+                    "icon": "send",
                     "pages": [
                       "ibc-go/v10.1.x/apps/transfer/overview",
                       "ibc-go/v10.1.x/apps/transfer/state",
@@ -602,9 +667,11 @@
               },
               {
                 "group": "IBC Middleware",
+                "icon": "layers",
                 "pages": [
                   {
                     "group": "Callbacks",
+                    "icon": "repeat",
                     "pages": [
                       "ibc-go/v10.1.x/middleware/callbacks/overview",
                       "ibc-go/v10.1.x/middleware/callbacks/integration",
@@ -619,6 +686,7 @@
               },
               {
                 "group": "Architecture Decision Records",
+                "icon": "scroll-text",
                 "pages": [
                   "ibc-go/v10.1.x/architecture/README",
                   "ibc-go/v10.1.x/architecture/adr-001-coin-source-tracing",
@@ -640,12 +708,14 @@
               },
               {
                 "group": "Changelog",
+                "icon": "rotate-ccw",
                 "pages": [
                   "ibc-go/v10.1.x/changelog/release-notes"
                 ]
               },
               {
                 "group": "Repositories",
+                "icon": "folder-git-2",
                 "pages": [
                   "ibc-go/v10.1.x/repos/go-ibc-go"
                 ]
@@ -659,12 +729,14 @@
         "groups": [
           {
             "group": "ICS Standard",
+            "icon": "file-text",
             "pages": [
               "ibc/spec/ics-001-ics-standard/README"
             ]
           },
           {
             "group": "IBC v2",
+            "icon": "sparkles",
             "pages": [
               "ibc/spec/IBC_V2/README",
               "ibc/spec/IBC_V2/app/ics-027-gmp/README",
@@ -678,6 +750,7 @@
           },
           {
             "group": "Core",
+            "icon": "box",
             "pages": [
               "ibc/spec/core/ics-002-client-semantics/README",
               "ibc/spec/core/ics-003-connection-semantics/README",
@@ -695,6 +768,7 @@
           },
           {
             "group": "Client",
+            "icon": "shield-check",
             "pages": [
               "ibc/spec/client/Rollup-Integration-guide",
               "ibc/spec/client/ics-006-solo-machine-client/README",
@@ -706,12 +780,14 @@
           },
           {
             "group": "Relayer",
+            "icon": "radio",
             "pages": [
               "ibc/spec/relayer/ics-018-relayer-algorithms/README"
             ]
           },
           {
             "group": "Applications",
+            "icon": "blocks",
             "pages": [
               "ibc/spec/app/ics-020-fungible-token-transfer/README",
               "ibc/spec/app/ics-020-fungible-token-transfer/deprecated/README",
@@ -731,6 +807,7 @@
           },
           {
             "group": "Repositories",
+            "icon": "folder-git-2",
             "pages": [
               "ibc/repos/spec-ibc"
             ]
@@ -745,5 +822,103 @@
       "label": "Get started",
       "href": "/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"
     }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://twitter.com/cosmos",
+      "github": "https://github.com/cosmos",
+      "discord": "https://discord.gg/interchain",
+      "website": "https://cosmos.network"
+    },
+    "links": [
+      {
+        "header": "Documentation",
+        "items": [
+          {
+            "label": "Learn how IBC works",
+            "href": "/ibc/01-introduction/01-what-is-ibc"
+          },
+          {
+            "label": "IBC CLI",
+            "href": "/ibc/05-ibc-cli/01-overview"
+          },
+          {
+            "label": "IBC-Solidity",
+            "href": "/ibc/06-ibc-solidity-contracts/01-overview"
+          },
+          {
+            "label": "IBC-Go",
+            "href": "/ibc-go/latest/intro"
+          },
+          {
+            "label": "Specification",
+            "href": "/ibc/spec/ics-001-ics-standard/README"
+          }
+        ]
+      },
+      {
+        "header": "Repositories",
+        "items": [
+          {
+            "label": "cosmos/ibc",
+            "href": "https://github.com/cosmos/ibc"
+          },
+          {
+            "label": "cosmos/ibc-go",
+            "href": "https://github.com/cosmos/ibc-go"
+          },
+          {
+            "label": "cosmos/ibc-contracts",
+            "href": "https://github.com/cosmos/ibc-contracts"
+          },
+          {
+            "label": "Cosmos GitHub",
+            "href": "https://github.com/cosmos"
+          }
+        ]
+      },
+      {
+        "header": "Get in touch",
+        "items": [
+          {
+            "label": "Developer Discord",
+            "href": "https://discord.gg/interchain"
+          },
+          {
+            "label": "Community Telegram",
+            "href": "https://t.me/CosmosOG"
+          },
+          {
+            "label": "Contact us",
+            "href": "https://www.cosmoslabs.io/contact"
+          },
+          {
+            "label": "Cosmos website",
+            "href": "https://cosmos.network/"
+          }
+        ]
+      },
+      {
+        "header": "Security",
+        "items": [
+          {
+            "label": "Security audits",
+            "href": "/ibc-go/latest/security-audits"
+          },
+          {
+            "label": "Cosmos HackerOne",
+            "href": "https://hackerone.com/cosmos"
+          },
+          {
+            "label": "Privacy",
+            "href": "https://cosmos.network/privacy-policy"
+          },
+          {
+            "label": "Trademark",
+            "href": "https://cosmos.network/trademark"
+          }
+        ]
+      }
+    ]
   }
 }

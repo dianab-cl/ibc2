@@ -7,7 +7,7 @@ This guide shows you how to run a relayer in its own process. It hosts no attest
 
 ## Before you begin
 
-Before proceeding, run the [tutorial](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) and [standalone attestor](/ibc/05-ibc-cli/04-run-a-standalone-attestor) guides first, in order. You'll need to have an IBC deployment and standalone attestors on both chains to complete this guide.
+Before proceeding, run the [tutorial](/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token) and [standalone attestor](/ibc/05-ibc-cli/05-run-a-standalone-attestor) guides first, in order. You'll need to have an IBC deployment and standalone attestors on both chains to complete this guide.
 
 The tutorial's keystore already holds a funded key, so this guide reuses it rather than importing another.
 
@@ -109,7 +109,7 @@ level=INFO msg="Starting relayer" module=bootstrap
 level=INFO msg=Readiness module=bootstrap readiness="{Event:ready ChainsConnected:[41001 41002] HTTP:[::]:3002}"
 ```
 
-The relayer is running and waiting for packets. The readiness log confirms startup; use the [gRPC health check](/ibc/05-ibc-cli/07-api#health-checks) to monitor ongoing API and database availability. It clears pending packets at startup, then every five minutes; `relayer.clearOnStart` and `relayer.clearInterval` change both.
+The relayer is running and waiting for packets. The readiness log confirms startup; use the [gRPC health check](/ibc/05-ibc-cli/08-api#health-checks) to monitor ongoing API and database availability. It clears pending packets at startup, then every five minutes; `relayer.clearOnStart` and `relayer.clearInterval` change both.
 
 2. Back in your first terminal, send a transfer and keep the hash:
 

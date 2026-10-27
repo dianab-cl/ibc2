@@ -20,7 +20,7 @@ Learn about the protocol.
 Learn about IBC applications.
 
 - [GMP: how it works](ibc/03-applications/01-gmp.mdx): Contract calls on another chain.
-- [Make a cross-chain GMP call](ibc/03-applications/03-make-a-cross-chain-gmp-call.mdx): Call a contract across chains.
+- [Make a cross-chain GMP call](ibc/05-ibc-cli/03-make-a-cross-chain-gmp-call.mdx): Call a contract across chains.
 - [IFT: how it works](ibc/03-applications/02-ift.mdx): A token that burns here and mints there.
 
 ## Light clients
@@ -51,11 +51,11 @@ IBC CLI is an all-in-one binary for deploying and running an IBC connection.
 ### Guides
 
 - [Deploy IBC and send a token](ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token.mdx): Deploy IBC on two chains and send a token.
-- [Run a standalone attestor](ibc/05-ibc-cli/04-run-a-standalone-attestor.mdx): An attestor in its own process.
-- [Run a standalone relayer](ibc/05-ibc-cli/03-run-a-standalone-relayer.mdx): Connect a relayer to an existing connection.
+- [Run a standalone attestor](ibc/05-ibc-cli/05-run-a-standalone-attestor.mdx): An attestor in its own process.
+- [Run a standalone relayer](ibc/05-ibc-cli/04-run-a-standalone-relayer.mdx): Connect a relayer to an existing connection.
 
 ### Reference
 
-- [Configuration](ibc/05-ibc-cli/05-configuration.mdx): Every key in `ibc.yml`.
-- [CLI commands](ibc/05-ibc-cli/06-cli-commands.mdx): Every command and flag.
-- [API](ibc/05-ibc-cli/07-api.mdx): The gRPC services.
+- [Configuration](ibc/05-ibc-cli/06-configuration.mdx): Every key in `ibc.yml`.
+- [CLI commands](ibc/05-ibc-cli/07-cli-commands.mdx): Every command and flag.
+- [API](ibc/05-ibc-cli/08-api.mdx): The gRPC services.

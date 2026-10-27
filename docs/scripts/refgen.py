@@ -15,9 +15,9 @@ A reference page is part prose and part table. The prose is written by a human
 and the tables are derived from code, so the tables can be regenerated whenever
 the code moves and the page cannot drift from it.
 
-    python3 docs/scripts/refgen.py api    docs/ibc/05-ibc-cli/07-api.mdx
-    python3 docs/scripts/refgen.py config docs/ibc/05-ibc-cli/05-configuration.mdx
-    python3 docs/scripts/refgen.py cli    docs/ibc/05-ibc-cli/06-cli-commands.mdx
+    python3 docs/scripts/refgen.py api    docs/ibc/05-ibc-cli/08-api.mdx
+    python3 docs/scripts/refgen.py config docs/ibc/05-ibc-cli/06-configuration.mdx
+    python3 docs/scripts/refgen.py cli    docs/ibc/05-ibc-cli/07-cli-commands.mdx
     python3 docs/scripts/refgen.py all --check   # exit 1 if any page is stale
 
 Generated regions are delimited by comments the review-copy stripper removes:
@@ -3250,9 +3250,9 @@ GENERATORS = {"api": gen_api, "cli": gen_cli, "config": gen_config}
 # The page each generator owns. A page named here must carry a marker for
 # every region its generator produces, so a new region cannot land in the
 # generator and go missing from the page.
-PAGES = {"config": "docs/ibc/05-ibc-cli/05-configuration.mdx",
-         "cli": "docs/ibc/05-ibc-cli/06-cli-commands.mdx",
-         "api": "docs/ibc/05-ibc-cli/07-api.mdx"}
+PAGES = {"config": "docs/ibc/05-ibc-cli/06-configuration.mdx",
+         "cli": "docs/ibc/05-ibc-cli/07-cli-commands.mdx",
+         "api": "docs/ibc/05-ibc-cli/08-api.mdx"}
 
 
 def stale_regions(kind, path):

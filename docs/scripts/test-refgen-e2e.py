@@ -189,7 +189,13 @@ def baseline(kind):
     return _BASELINE[kind]
 
 
-CITE = re.compile(r"^<!-- \[.*\]\(.*\) -->$", re.M)
+# Derived from the generator's own comment delimiters rather than written
+# out here: these pages are MDX, so a citation reads `{/* ... */}` and a
+# hardcoded `<!-- ... -->` would silently stop matching, leaving
+# `cites=False` with nothing to strip and every line-shifting mutation
+# failing on citation drift it was meant to ignore.
+CITE = re.compile(r"^%s \[.*\]\(.*\) %s$"
+                  % tuple(re.escape(d) for d in refgen.COMMENT), re.M)
 
 
 def unchanged(box, kind, rename=None, cites=True):
@@ -804,8 +810,20 @@ def _():
                 # ask the same question the cell answers. Deliberately its own
                 # probing rather than the generator's: two paths to one answer
                 # is the point, and calling refgen here would test nothing.
-                targets = ([[]] if "to run" not in texts.get(key, "")
-                           else [["relayer"], ["attestor"]])
+                # refgen emits "to run", "to relay" and "to attest". Each
+                # names the process that refuses to start without the key,
+                # so probe that one; treating "to relay" as unscoped asked
+                # `config validate` with no target, where the key is not
+                # required, and reported a correct page as wrong.
+                text = texts.get(key, "")
+                if "to relay" in text:
+                    targets = [["relayer"]]
+                elif "to attest" in text:
+                    targets = [["attestor"]]
+                elif "to run" in text:
+                    targets = [["relayer"], ["attestor"]]
+                else:
+                    targets = [[]]
                 complained = False
                 for t in targets:
                     r = subprocess.run(
@@ -1082,8 +1100,15 @@ def _():
                  """	case c.validateRPC() != nil:
 		return c.validateRPC()
 """)
+        # Match the signature as it stands rather than pinning its parameter
+        # name: that parameter was renamed to validateRouterAddress and this
+        # mutation silently went stale. The case is about a rule moving into
+        # a helper, not about what the parameter is called.
+        cfg = open(os.path.join(box.dir, "cli/internal/config/config.go")).read()
+        sig = re.search(r"func \(c EVMChainConfig\) Validate\([^)]*\) error \{", cfg)
+        assert sig, "EVMChainConfig.Validate is gone; this case needs rewriting"
         box.edit("cli/internal/config/config.go",
-                 "func (c EVMChainConfig) Validate(validateICS26Router bool) error {",
+                 sig.group(0),
                  """func (c EVMChainConfig) validateRPC() error {
 	if c.RPC == "" {
 		return errPathf("rpc", "required")
@@ -1091,7 +1116,7 @@ def _():
 	return nil
 }
 
-func (c EVMChainConfig) Validate(validateICS26Router bool) error {""")
+""" + sig.group(0))
         assert _cell(box, "config:chains", "evm.rpc") == "**required**", \
             _cell(box, "config:chains", "evm.rpc")
 

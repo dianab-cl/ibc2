@@ -270,3 +270,11 @@ header a[href$="/ibc/05-ibc-cli/02-tutorial-deploy-ibc-and-send-a-token"] *,
 .nav-tabs-item[href^="/ibc/06-ibc-solidity-contracts/"] { --tab-accent: #7522b5; --tab-ink: #ffffff; }
 .nav-tabs-item[href^="/ibc-go/"]                   { --tab-accent: #4b47ca; --tab-ink: #ffffff; }
 .nav-tabs-item[href^="/ibc/spec/"]                 { --tab-accent: #ef5628; --tab-ink: #0e0e0e; }
+
+/* Mintlify sizes the navbar logo with its own `h-7` utility (28px), which is
+   too small for this lockup: the tagline sits on three lines, so at 28px each
+   line is about 2.8px tall. `img.nav-logo` is one class plus an element, so it
+   outranks `.h-7` without needing !important. */
+img.nav-logo {
+  height: 3rem;
+}
