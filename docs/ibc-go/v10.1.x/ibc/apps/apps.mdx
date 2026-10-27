@@ -44,7 +44,7 @@ the callbacks that are called during channel handshake execution.
 Here are the channel handshake callbacks that modules are expected to implement:
 
 ```go expandable
-/ Called by IBC Handler on MsgOpenInit
+// Called by IBC Handler on MsgOpenInit
 func (k Keeper)
 
 OnChanOpenInit(ctx sdk.Context,
@@ -58,17 +58,17 @@ OnChanOpenInit(ctx sdk.Context,
 
 error {
 
-  / ... do custom initialization logic
+  // ... do custom initialization logic
 
-  / Use above arguments to determine if we want to abort handshake
-  / Examples: Abort if order == UNORDERED,
-  / Abort if version is unsupported
+  // Use above arguments to determine if we want to abort handshake
+  // Examples: Abort if order == UNORDERED,
+  // Abort if version is unsupported
     err := checkArguments(args)
 
 return err
 }
 
-/ Called by IBC Handler on MsgOpenTry
+// Called by IBC Handler on MsgOpenTry
 OnChanOpenTry(
   ctx sdk.Context,
   order channeltypes.Order,
@@ -78,24 +78,24 @@ OnChanOpenTry(
   counterparty channeltypes.Counterparty,
   counterpartyVersion string,
 ) (string, error) {
-  / ... do custom initialization logic
+  // ... do custom initialization logic
 
-  / Use above arguments to determine if we want to abort handshake
+  // Use above arguments to determine if we want to abort handshake
     if err := checkArguments(args); err != nil {
     return err
 }
 
-  / Construct application version 
-  / IBC applications must return the appropriate application version
-  / This can be a simple string or it can be a complex version constructed
-  / from the counterpartyVersion and other arguments. 
-  / The version returned will be the channel version used for both channel ends. 
+  // Construct application version 
+  // IBC applications must return the appropriate application version
+  // This can be a simple string or it can be a complex version constructed
+  // from the counterpartyVersion and other arguments. 
+  // The version returned will be the channel version used for both channel ends. 
     appVersion := negotiateAppVersion(counterpartyVersion, args)
 
 return appVersion, nil
 }
 
-/ Called by IBC Handler on MsgOpenAck
+// Called by IBC Handler on MsgOpenAck
 OnChanOpenAck(
   ctx sdk.Context,
   portID,
@@ -104,15 +104,15 @@ OnChanOpenAck(
 )
 
 error {
-  / ... do custom initialization logic
+  // ... do custom initialization logic
 
-  / Use above arguments to determine if we want to abort handshake
+  // Use above arguments to determine if we want to abort handshake
     err := checkArguments(args)
 
 return err
 }
 
-/ Called by IBC Handler on MsgOpenConfirm
+// Called by IBC Handler on MsgOpenConfirm
 OnChanOpenConfirm(
   ctx sdk.Context,
   portID,
@@ -120,9 +120,9 @@ OnChanOpenConfirm(
 )
 
 error {
-  / ... do custom initialization logic
+  // ... do custom initialization logic
 
-  / Use above arguments to determine if we want to abort handshake
+  // Use above arguments to determine if we want to abort handshake
     err := checkArguments(args)
 
 return err
@@ -134,7 +134,7 @@ closing handshake. Closing a channel is a 2-step handshake, the initiating chain
 `ChanCloseInit` and the finalizing chain calls `ChanCloseConfirm`.
 
 ```go expandable
-/ Called by IBC Handler on MsgCloseInit
+// Called by IBC Handler on MsgCloseInit
 OnChanCloseInit(
   ctx sdk.Context,
   portID,
@@ -142,15 +142,15 @@ OnChanCloseInit(
 )
 
 error {
-  / ... do custom finalization logic
+  // ... do custom finalization logic
 
-  / Use above arguments to determine if we want to abort handshake
+  // Use above arguments to determine if we want to abort handshake
     err := checkArguments(args)
 
 return err
 }
 
-/ Called by IBC Handler on MsgCloseConfirm
+// Called by IBC Handler on MsgCloseConfirm
 OnChanCloseConfirm(
   ctx sdk.Context,
   portID,
@@ -158,9 +158,9 @@ OnChanCloseConfirm(
 )
 
 error {
-  / ... do custom finalization logic
+  // ... do custom finalization logic
 
-  / Use above arguments to determine if we want to abort handshake
+  // Use above arguments to determine if we want to abort handshake
     err := checkArguments(args)
 
 return err
@@ -205,28 +205,28 @@ Thus, a module must define its custom packet data structure, along with a well-d
 encode and decode it to and from `[]byte`.
 
 ```go expandable
-/ Custom packet data defined in application module
+// Custom packet data defined in application module
 type CustomPacketData struct {
-  / Custom fields ...
+  // Custom fields ...
 }
 
 EncodePacketData(packetData CustomPacketData) []byte {
-  / encode packetData to bytes
+  // encode packetData to bytes
 }
 
 DecodePacketData(encoded []byte) (CustomPacketData) {
-  / decode from bytes to packet data
+  // decode from bytes to packet data
 }
 ```
 
 Then a module must encode its packet data before sending it through IBC.
 
 ```go expandable
-/ Sending custom application packet data
+// Sending custom application packet data
     data := EncodePacketData(customPacketData)
 
 packet.Data = data
-/ Send packet to IBC, authenticating with channelCap
+// Send packet to IBC, authenticating with channelCap
 sequence, err := IBCChannelKeeper.SendPacket(
   ctx, 
   sourcePort, 
@@ -241,9 +241,9 @@ A module receiving a packet must decode the `PacketData` into a structure it exp
 act on it.
 
 ```go
-/ Receiving custom application packet data (in OnRecvPacket)
+// Receiving custom application packet data (in OnRecvPacket)
     packetData := DecodePacketData(packet.Data)
-/ handle received custom packet data
+// handle received custom packet data
 ```
 
 #### Packet Flow Handling
@@ -273,9 +273,9 @@ module must trigger execution on the port-bound module through the use of callba
 packet a module simply needs to call `SendPacket` on the `IBCChannelKeeper`.
 
 ```go expandable
-/ Sending custom application packet data
+// Sending custom application packet data
     data := EncodePacketData(customPacketData)
-/ Send packet to IBC, authenticating with channelCap
+// Send packet to IBC, authenticating with channelCap
 sequence, err := IBCChannelKeeper.SendPacket(
   ctx, 
   sourcePort, 
@@ -313,14 +313,14 @@ OnRecvPacket(
 )
 
 ibcexported.Acknowledgement {
-  / Decode the packet data
+  // Decode the packet data
     packetData := DecodePacketData(packet.Data)
 
-  / do application state changes based on packet data and return the acknowledgement
-  / NOTE: The acknowledgement will indicate to the IBC handler if the application 
-  / state changes should be written via the `Success()` function. Application state
-  / changes are only written if the acknowledgement is successful or the acknowledgement
-  / returned is nil indicating that an asynchronous acknowledgement will occur.
+  // do application state changes based on packet data and return the acknowledgement
+  // NOTE: The acknowledgement will indicate to the IBC handler if the application 
+  // state changes should be written via the `Success()` function. Application state
+  // changes are only written if the acknowledgement is successful or the acknowledgement
+  // returned is nil indicating that an asynchronous acknowledgement will occur.
     ack := processPacket(ctx, packet, packetData)
 
 return ack
@@ -330,8 +330,8 @@ return ack
 The Acknowledgement interface:
 
 ```go
-/ Acknowledgement defines the interface used to return
-/ acknowledgements in the OnRecvPacket callback.
+// Acknowledgement defines the interface used to return
+// acknowledgements in the OnRecvPacket callback.
 type Acknowledgement interface {
     Success()
 
@@ -364,15 +364,15 @@ specifies a recommended format for acknowledgements. This acknowledgement type c
 While modules may choose arbitrary acknowledgement structs, a default acknowledgement types is provided by IBC [here](https://github.com/cosmos/ibc-go/blob/main/proto/ibc/core/channel/v1/channel.proto):
 
 ```proto expandable
-/ Acknowledgement is the recommended acknowledgement format to be used by
-/ app-specific protocols.
-/ NOTE: The field numbers 21 and 22 were explicitly chosen to avoid accidental
-/ conflicts with other protobuf message formats used for acknowledgements.
-/ The first byte of any message with this format will be the non-ASCII values
-/ `0xaa` (result) or `0xb2` (error). Implemented as defined by ICS:
-/ https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#acknowledgement-envelope
+// Acknowledgement is the recommended acknowledgement format to be used by
+// app-specific protocols.
+// NOTE: The field numbers 21 and 22 were explicitly chosen to avoid accidental
+// conflicts with other protobuf message formats used for acknowledgements.
+// The first byte of any message with this format will be the non-ASCII values
+// `0xaa` (result) or `0xb2` (error). Implemented as defined by ICS:
+// https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#acknowledgement-envelope
 message Acknowledgement {
-  / response contains either a result or an error and must be non-empty
+  // response contains either a result or an error and must be non-empty
   oneof response {
     bytes  result = 21;
     string error  = 22;
@@ -398,10 +398,10 @@ OnAcknowledgementPacket(
   packet channeltypes.Packet,
   acknowledgement []byte,
 ) (*sdk.Result, error) {
-  / Decode acknowledgement
+  // Decode acknowledgement
     ack := DecodeAcknowledgement(acknowledgement)
 
-  / process ack
+  // process ack
   res, err := processAck(ack)
 
 return res, err
@@ -422,7 +422,7 @@ OnTimeoutPacket(
   ctx sdk.Context,
   packet channeltypes.Packet,
 ) (*sdk.Result, error) {
-  / do custom timeout logic
+  // do custom timeout logic
 }
 ```
 
@@ -433,19 +433,19 @@ handshake callbacks and packet handling callbacks). The concrete implementation 
 must be registered with the module name as a route on the IBC `Router`.
 
 ```go expandable
-/ app.go
+// app.go
 func NewApp(...args) *App {
-/ ...
+// ...
 
-/ Create static IBC router, add module routes, then set and seal it
+// Create static IBC router, add module routes, then set and seal it
     ibcRouter := port.NewRouter()
 
 ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
-/ Note: moduleCallbacks must implement IBCModule interface
+// Note: moduleCallbacks must implement IBCModule interface
 ibcRouter.AddRoute(moduleName, moduleCallbacks)
 
-/ Setting Router will finalize all routes by sealing router
-/ No more routes can be added
+// Setting Router will finalize all routes by sealing router
+// No more routes can be added
 app.IBCKeeper.SetRouter(ibcRouter)
 ```
 

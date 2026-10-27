@@ -33,25 +33,25 @@ func MarshalAsIBCDoes(ack channeltypes.Acknowledgement) ([]byte, error) {
 }
 ```
 
-The interfaces a middleware must implement are found in [core/api](https://github.com/cosmos/ibc-go/blob/main/modules/core/api/module.go#L11). Note that this interface has changed from IBC classic.
+The interfaces a middleware must implement are found in [core/api](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/core/api/module.go#L11). Note that this interface has changed from IBC classic.
 
 An `IBCMiddleware` struct implementing the `Middleware` interface, can be defined with its constructor as follows:
 
 ```go expandable
-/ @ x/module_name/ibc_middleware.go
+// @ x/module_name/ibc_middleware.go
 
-/ IBCMiddleware implements the IBCv2 middleware interface
+// IBCMiddleware implements the IBCv2 middleware interface
 type IBCMiddleware struct {
     app                   api.IBCModule / underlying app or middleware
   writeAckWrapper       api. WriteAcknowledgementWrapper / writes acknowledgement for an async acknowledgement
   PacketDataUnmarshaler api.PacketDataUnmarshaler / optional interface
   keeper                types.Keeper / required for stateful middleware
-  / Keeper may include middleware specific keeper and the ChannelKeeperV2
+  // Keeper may include middleware specific keeper and the ChannelKeeperV2
 
-  / additional middleware specific fields
+  // additional middleware specific fields
 }
 
-/ NewIBCMiddleware creates a new IBCMiddleware given the keeper and underlying application
+// NewIBCMiddleware creates a new IBCMiddleware given the keeper and underlying application
 func NewIBCMiddleware(app api.IBCModule, 
 writeAckWrapper api.WriteAcknowledgementWrapper, 
 k types.Keeper
@@ -72,7 +72,7 @@ The ICS4Wrapper has been removed in IBC v2 and there are no channel handshake ca
 
 ## Implement `IBCModule` interface
 
-`IBCMiddleware` is a struct that implements the [`IBCModule` interface (`api.IBCModule`)](https://github.com/cosmos/ibc-go/blob/main/modules/core/api/module.go#L11-L53). It is recommended to separate these callbacks into a separate file `ibc_middleware.go`.
+`IBCMiddleware` is a struct that implements the [`IBCModule` interface (`api.IBCModule`)](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/core/api/module.go#L11-L53). It is recommended to separate these callbacks into a separate file `ibc_middleware.go`.
 
 > Note how this is analogous to implementing the same interfaces for IBC applications that act as base applications.
 
@@ -101,14 +101,14 @@ OnRecvPacket(
 )
 
 channeltypesv2.RecvPacketResult {
-	/ Middleware may choose to do custom preprocessing logic before calling the underlying app OnRecvPacket
-    / Middleware may choose to error early and return a RecvPacketResult Failure
-    / Middleware may choose to modify the payload before passing on to OnRecvPacket though this
-    / should only be done to support very advanced custom behavior
-    / Middleware MUST NOT modify client identifiers and sequence
+	// Middleware may choose to do custom preprocessing logic before calling the underlying app OnRecvPacket
+    // Middleware may choose to error early and return a RecvPacketResult Failure
+    // Middleware may choose to modify the payload before passing on to OnRecvPacket though this
+    // should only be done to support very advanced custom behavior
+    // Middleware MUST NOT modify client identifiers and sequence
     doCustomPreProcessLogic()
     
-	/ call underlying app OnRecvPacket
+	// call underlying app OnRecvPacket
     recvResult := im.app.OnRecvPacket(ctx, sourceClient, destinationClient, sequence, payload, relayer)
     if recvResult.Status == PACKET_STATUS_FAILURE {
     return recvResult
@@ -120,7 +120,7 @@ doCustomPostProcessLogic(recvResult) / middleware may modify recvResult
 }
 ```
 
-See [here](https://github.com/cosmos/ibc-go/blob/main/modules/apps/callbacks/v2/ibc_middleware.go#L161-L230) an example implementation of this callback for the Callbacks Middleware module.
+See [here](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/apps/callbacks/v2/ibc_middleware.go#L161-L230) an example implementation of this callback for the Callbacks Middleware module.
 
 #### `OnAcknowledgementPacket`
 
@@ -138,13 +138,13 @@ OnAcknowledgementPacket(
 )
 
 error {
-	/ preprocessing logic may modify the acknowledgement before passing to 
-	/ the underlying app though this should only be done in advanced cases
-	/ Middleware may return error early
-	/ it MUST NOT change the identifiers of the clients or the sequence
+	// preprocessing logic may modify the acknowledgement before passing to 
+	// the underlying app though this should only be done in advanced cases
+	// Middleware may return error early
+	// it MUST NOT change the identifiers of the clients or the sequence
 	doCustomPreProcessLogic(payload, acknowledgement)
 
-	/ call underlying app OnAcknowledgementPacket
+	// call underlying app OnAcknowledgementPacket
 	err = im.app.OnAcknowledgementPacket(
 		sourceClient, destinationClient, sequence,
 		acknowledgement, payload, relayer
@@ -153,12 +153,12 @@ error {
     return err
 }
 
-	/ may perform some post acknowledgement logic and return error here
+	// may perform some post acknowledgement logic and return error here
 	return doCustomPostProcessLogic()
 }
 ```
 
-See [here](https://github.com/cosmos/ibc-go/blob/main/modules/apps/callbacks/v2/ibc_middleware.go#L236-L302) an example implementation of this callback for the Callbacks Middleware module.
+See [here](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/apps/callbacks/v2/ibc_middleware.go#L236-L302) an example implementation of this callback for the Callbacks Middleware module.
 
 #### `OnTimeoutPacket`
 
@@ -175,11 +175,11 @@ OnTimeoutPacket(
 )
 
 error {
-	/ Middleware may choose to do custom preprocessing logic before calling the underlying app OnTimeoutPacket
-	/ Middleware may return error early
+	// Middleware may choose to do custom preprocessing logic before calling the underlying app OnTimeoutPacket
+	// Middleware may return error early
 	doCustomPreProcessLogic(payload)
 
-	/ call underlying app OnTimeoutPacket
+	// call underlying app OnTimeoutPacket
 	err = im.app.OnTimeoutPacket(
 		sourceClient, destinationClient, sequence,
 		payload, relayer
@@ -188,26 +188,26 @@ error {
     return err
 }
 
-	/ may perform some post timeout logic and return error here
+	// may perform some post timeout logic and return error here
 	return doCustomPostProcessLogic()
 }
 ```
 
-See [here](https://github.com/cosmos/ibc-go/blob/main/modules/apps/callbacks/v2/ibc_middleware.go#L309-L367) an example implementation of this callback for the Callbacks Middleware module.
+See [here](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/apps/callbacks/v2/ibc_middleware.go#L309-L367) an example implementation of this callback for the Callbacks Middleware module.
 
 ### WriteAckWrapper
 
 Middleware must also wrap the `WriteAcknowledgement` interface so that any acknowledgement written by the application passes through the middleware first. This allows middleware to modify or delay writing an acknowledgment before committed to the IBC store.
 
 ```go
-/ WithWriteAckWrapper sets the WriteAcknowledgementWrapper for the middleware.
+// WithWriteAckWrapper sets the WriteAcknowledgementWrapper for the middleware.
 func (im *IBCMiddleware)
 
 WithWriteAckWrapper(writeAckWrapper api.WriteAcknowledgementWrapper) {
     im.writeAckWrapper = writeAckWrapper
 }
 
-/ GetWriteAckWrapper returns the WriteAckWrapper
+// GetWriteAckWrapper returns the WriteAckWrapper
 func (im *IBCMiddleware)
 
 GetWriteAckWrapper()
@@ -219,12 +219,12 @@ api.WriteAcknowledgementWrapper {
 
 ### `WriteAcknowledgement`
 
-This is where the middleware acknowledgement handling is finalised. An example is shown in the [callbacks middleware](https://github.com/cosmos/ibc-go/blob/main/modules/apps/callbacks/v2/ibc_middleware.go#L369-L454)
+This is where the middleware acknowledgement handling is finalised. An example is shown in the [callbacks middleware](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/apps/callbacks/v2/ibc_middleware.go#L369-L454)
 
 ```go expandable
-/ WriteAcknowledgement facilitates acknowledgment being written asynchronously
-/ The call stack flows from the IBC application to the IBC core handler
-/ Thus this function is called by the IBC app or a lower-level middleware
+// WriteAcknowledgement facilitates acknowledgment being written asynchronously
+// The call stack flows from the IBC application to the IBC core handler
+// Thus this function is called by the IBC app or a lower-level middleware
 func (im IBCMiddleware)
 
 WriteAcknowledgement(
@@ -254,18 +254,18 @@ The order of middleware **matters**, function calls from IBC to the application 
 The example integration is detailed for an IBC v2 stack using transfer and the callbacks middleware.
 
 ```go expandable
-/ Middleware Stacks
-/ initialising callbacks middleware  
+// Middleware Stacks
+// initialising callbacks middleware  
     maxCallbackGas := uint64(10_000_000)
     wasmStackIBCHandler := wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCKeeper.ChannelKeeper)
 
-/ Create the transferv2 stack with transfer and callbacks middleware
+// Create the transferv2 stack with transfer and callbacks middleware
   var ibcv2TransferStack ibcapi.IBCModule
 	ibcv2TransferStack = transferv2.NewIBCModule(app.TransferKeeper)
 
 ibcv2TransferStack = ibccallbacksv2.NewIBCMiddleware(transferv2.NewIBCModule(app.TransferKeeper), app.IBCKeeper.ChannelKeeperV2, wasmStackIBCHandler, app.IBCKeeper.ChannelKeeperV2, maxCallbackGas)
 
-/ Create static IBC v2 router, add app routes, then set and seal it
+// Create static IBC v2 router, add app routes, then set and seal it
   ibcRouterV2 := ibcapi.NewRouter()
 
 ibcRouterV2.AddRoute(ibctransfertypes.PortID, ibcv2TransferStack)

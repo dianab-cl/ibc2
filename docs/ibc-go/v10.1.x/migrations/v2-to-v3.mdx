@@ -45,22 +45,22 @@ If the chain will adopt ICS27, it must set the appropriate params during the exe
 ```go expandable
 app.UpgradeKeeper.SetUpgradeHandler("v3",
   func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
-    / set the ICS27 consensus version so InitGenesis is not run
+    // set the ICS27 consensus version so InitGenesis is not run
     fromVM[icatypes.ModuleName] = icamodule.ConsensusVersion()
 
-    / create ICS27 Controller submodule params
+    // create ICS27 Controller submodule params
     controllerParams := icacontrollertypes.Params{
     ControllerEnabled: true,
 }
 
-    / create ICS27 Host submodule params
+    // create ICS27 Host submodule params
     hostParams := icahosttypes.Params{
     HostEnabled: true,
     AllowMessages: []string{"/cosmos.bank.v1beta1.MsgSend", ...
 },
 }
 
-    / initialize ICS27 module
+    // initialize ICS27 module
     icamodule.InitModule(ctx, controllerParams, hostParams)
 
     ...
@@ -100,12 +100,12 @@ The migration code required may look like:
 
 ```go expandable
 controllerGenesisState := icatypes.DefaultControllerGenesis()
-  / overwrite parameters as desired
+  // overwrite parameters as desired
   controllerGenesisState.Params = icacontrollertypes.Params{
     ControllerEnabled: true,
 }
     hostGenesisState := icatypes.DefaultHostGenesis()
-  / overwrite parameters as desired
+  // overwrite parameters as desired
   hostGenesisState.Params = icahosttypes.Params{
     HostEnabled: true,
     AllowMessages: []string{"/cosmos.bank.v1beta1.MsgSend", ...
@@ -113,7 +113,7 @@ controllerGenesisState := icatypes.DefaultControllerGenesis()
 }
     icaGenesisState := icatypes.NewGenesisState(controllerGenesisState, hostGenesisState)
 
-  / set new ics27 genesis state
+  // set new ics27 genesis state
   appState[icatypes.ModuleName] = clientCtx.Codec.MustMarshalJSON(icaGenesisState)
 ```
 

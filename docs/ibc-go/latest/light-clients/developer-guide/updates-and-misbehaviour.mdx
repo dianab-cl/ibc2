@@ -99,11 +99,11 @@ clientModule, found := k.router.GetRoute(clientID)
     foundMisbehaviour := clientModule.CheckForMisbehaviour(ctx, clientID, clientMsg)
     if foundMisbehaviour {
     clientModule.UpdateStateOnMisbehaviour(ctx, clientID, clientMsg)
-  / emit misbehaviour event
+  // emit misbehaviour event
   return
 }
 
 clientModule.UpdateState(ctx, clientID, clientMsg) / expects no-op on duplicate header
-/ emit update event
+// emit update event
 return
 ```

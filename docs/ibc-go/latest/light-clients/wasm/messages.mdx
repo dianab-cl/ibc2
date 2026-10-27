@@ -11,9 +11,9 @@ Uploading the Wasm light client contract to the Wasm VM storage is achieved by m
 
 ```go
 type MsgStoreCode struct {
-  / signer address
+  // signer address
   Signer string
-  / wasm byte code of light client contract. It can be raw or gzip compressed
+  // wasm byte code of light client contract. It can be raw or gzip compressed
   WasmByteCode []byte
 }
 ```
@@ -33,13 +33,13 @@ Migrating a contract to a new Wasm byte code is achieved by means of `MsgMigrate
 
 ```go
 type MsgMigrateContract struct {
-  / signer address
+  // signer address
   Signer string
-  / the client id of the contract
+  // the client id of the contract
   ClientId string
-  / the SHA-256 hash of the new wasm byte code for the contract
+  // the SHA-256 hash of the new wasm byte code for the contract
   Checksum []byte
-  / the json-encoded migrate msg to be passed to the contract on migration
+  // the json-encoded migrate msg to be passed to the contract on migration
   Msg []byte
 }
 ```
@@ -58,9 +58,9 @@ Removing a checksum from the list of allowed checksums is achieved by means of `
 
 ```go
 type MsgRemoveChecksum struct {
-  / signer address
+  // signer address
   Signer string
-  / Wasm byte code checksum to be removed from the store
+  // Wasm byte code checksum to be removed from the store
   Checksum []byte
 }
 ```

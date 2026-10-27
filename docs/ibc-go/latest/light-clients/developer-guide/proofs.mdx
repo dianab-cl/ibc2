@@ -30,13 +30,13 @@ In some cases, there is a necessity to "mock" non-existence proofs if the counte
 
 The state verification functions for all IBC data types have been consolidated into two generic methods, `VerifyMembership` and `VerifyNonMembership`.
 
-From the [`LightClientModule` interface definition](https://github.com/cosmos/ibc-go/blob/main/modules/core/exported/client.go#L56), we find:
+From the [`LightClientModule` interface definition](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/core/exported/client.go#L56), we find:
 
 ```go expandable
-/ VerifyMembership is a generic proof verification method which verifies 
-/ a proof of the existence of a value at a given CommitmentPath at the 
-/ specified height. The caller is expected to construct the full CommitmentPath
-/ from a CommitmentPrefix and a standardized path (as defined in ICS 24).
+// VerifyMembership is a generic proof verification method which verifies 
+// a proof of the existence of a value at a given CommitmentPath at the 
+// specified height. The caller is expected to construct the full CommitmentPath
+// from a CommitmentPrefix and a standardized path (as defined in ICS 24).
 VerifyMembership(
   ctx sdk.Context,
   clientID string,
@@ -50,10 +50,10 @@ VerifyMembership(
 
 error
 
-/ VerifyNonMembership is a generic proof verification method which verifies
-/ the absence of a given CommitmentPath at a specified height. The caller is
-/ expected to construct the full CommitmentPath from a CommitmentPrefix and 
-/ a standardized path (as defined in ICS 24).
+// VerifyNonMembership is a generic proof verification method which verifies
+// the absence of a given CommitmentPath at a specified height. The caller is
+// expected to construct the full CommitmentPath from a CommitmentPrefix and 
+// a standardized path (as defined in ICS 24).
 VerifyNonMembership(
   ctx sdk.Context,
   clientStore sdk.KVStore,

@@ -23,7 +23,7 @@ go get github.com/cosmos/ibc-go/modules/light-clients/08-wasm/v10
 The sample code below shows the relevant integration points in `app.go` required to set up the `08-wasm` module in a chain binary. Since `08-wasm` is a light client module itself, please also check out the section [Integrating light clients](/ibc-go/v10.1.x/ibc/integration#integrating-light-clients) for more information:
 
 ```go expandable
-/ app.go
+// app.go
 import (
 
   ...
@@ -39,7 +39,7 @@ import (
 
 ...
 
-/ Register the AppModule for the 08-wasm module
+// Register the AppModule for the 08-wasm module
 ModuleBasics = module.NewBasicManager(
   ...
   ibcwasm.AppModuleBasic{
@@ -47,7 +47,7 @@ ModuleBasics = module.NewBasicManager(
   ...
 )
 
-/ Add 08-wasm Keeper
+// Add 08-wasm Keeper
 type SimApp struct {
   ...
   WasmClientKeeper ibcwasmkeeper.Keeper
@@ -68,12 +68,12 @@ func NewSimApp(
     ibcwasmtypes.StoreKey,
   )
 
-  / Instantiate 08-wasm's keeper
-  / This sample code uses a constructor function that
-  / accepts a pointer to an existing instance of Wasm VM.
-  / This is the recommended approach when the chain
-  / also uses `x/wasm`, and then the Wasm VM instance
-  / can be shared.
+  // Instantiate 08-wasm's keeper
+  // This sample code uses a constructor function that
+  // accepts a pointer to an existing instance of Wasm VM.
+  // This is the recommended approach when the chain
+  // also uses `x/wasm`, and then the Wasm VM instance
+  // can be shared.
   app.WasmClientKeeper = ibcwasmkeeper.NewKeeperWithVM(
     appCodec,
     runtime.NewKVStoreService(keys[ibcwasmtypes.StoreKey]),
@@ -87,7 +87,7 @@ func NewSimApp(
 app.IBCKeeper.ClientKeeper.AddRoute(ibcwasmtypes.ModuleName, &wasmLightClientModule)
 
 app.ModuleManager = module.NewManager(
-    / SDK app modules
+    // SDK app modules
     ...
     ibcwasm.NewAppModule(app.WasmClientKeeper),
   )
@@ -114,11 +114,11 @@ app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
   ...
 
-  / initialize BaseApp
+  // initialize BaseApp
   app.SetInitChainer(app.InitChainer)
   ...
 
-  / must be before Loading version
+  // must be before Loading version
     if manager := app.SnapshotManager(); manager != nil {
     err := manager.RegisterExtensions(
       ibcwasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmClientKeeper),
@@ -134,7 +134,7 @@ app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
     ctx := app.BaseApp.NewUncachedContext(true, cmtproto.Header{
 })
 
-    / Initialize pinned codes in wasmvm as they are not persisted there
+    // Initialize pinned codes in wasmvm as they are not persisted there
     if err := app.WasmClientKeeper.InitializePinnedCodes(ctx); err != nil {
     cmtos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
 }
@@ -161,7 +161,7 @@ In order to share the Wasm VM instance, please follow the guideline below. Pleas
 The code to set this up would look something like this:
 
 ```go expandable
-/ app.go
+// app.go
 import (
 
   ...
@@ -178,7 +178,7 @@ import (
 
 ...
 
-/ instantiate the Wasm VM with the chosen parameters
+// instantiate the Wasm VM with the chosen parameters
 wasmer, err := wasmvm.NewVM(
   dataDir,
   availableCapabilities,
@@ -190,14 +190,14 @@ wasmer, err := wasmvm.NewVM(
     panic(err)
 }
 
-/ create an Option slice (or append to an existing one)
-/ with the option to use a custom Wasm VM instance
+// create an Option slice (or append to an existing one)
+// with the option to use a custom Wasm VM instance
 wasmOpts = []wasmkeeper.Option{
     wasmkeeper.WithWasmEngine(wasmer),
 }
 
-/ the keeper will use the provided Wasm VM instance,
-/ instead of instantiating a new one
+// the keeper will use the provided Wasm VM instance,
+// instead of instantiating a new one
 app.WasmKeeper = wasmkeeper.NewKeeper(
   appCodec,
   keys[wasmtypes.StoreKey],
@@ -245,7 +245,7 @@ Another configuration parameter of the Wasm VM is the contract memory limit (in 
 The following sample code shows how the keeper would be constructed using this method:
 
 ```go expandable
-/ app.go
+// app.go
 import (
 
   ...
@@ -258,8 +258,8 @@ import (
 
 ...
 
-/ homePath is the path to the directory where the data
-/ directory for Wasm blobs and caches will be created
+// homePath is the path to the directory where the data
+// directory for Wasm blobs and caches will be created
     wasmConfig := ibcwasmtypes.WasmConfig{
     DataDir:               filepath.Join(homePath, "ibc_08-wasm_client_data"),
     SupportedCapabilities: []string{"iterator"
@@ -295,10 +295,10 @@ We first construct a [`QueryPlugins`](https://github.com/cosmos/ibc-go/blob/57fc
 ```go
 queryPlugins := ibcwasmtypes.QueryPlugins {
     Custom: MyCustomQueryPlugin(),
-  / `myAcceptList` is a `[]string` containing the list of gRPC query paths that the chain wants to allow for the `08-wasm` module to query.
-  / These queries must be registered in the chain's gRPC query router, be deterministic, and track their gas usage.
-  / The `AcceptListStargateQuerier` function will return a query plugin that will only allow queries for the paths in the `myAcceptList`.
-  / The query responses are encoded in protobuf unlike the implementation in `x/wasm`.
+  // `myAcceptList` is a `[]string` containing the list of gRPC query paths that the chain wants to allow for the `08-wasm` module to query.
+  // These queries must be registered in the chain's gRPC query router, be deterministic, and track their gas usage.
+  // The `AcceptListStargateQuerier` function will return a query plugin that will only allow queries for the paths in the `myAcceptList`.
+  // The query responses are encoded in protobuf unlike the implementation in `x/wasm`.
   Stargate: ibcwasmtypes.AcceptListStargateQuerier(myAcceptList),
 }
 ```
@@ -307,7 +307,7 @@ Note that the `Stargate` querier appends the user defined accept list of query r
 The `defaultAcceptList` defines a single query route: `"/ibc.core.client.v1.Query/VerifyMembership"`. This allows for light client smart contracts to delegate parts of their workflow to other light clients for auxiliary proof verification. For example, proof of inclusion of block and tx data by a data availability provider.
 
 ```go
-/ defaultAcceptList defines a set of default allowed queries made available to the Querier.
+// defaultAcceptList defines a set of default allowed queries made available to the Querier.
 var defaultAcceptList = []string{
   "/ibc.core.client.v1.Query/VerifyMembership",
 }
@@ -370,7 +370,7 @@ func CreateWasmUpgradeHandler(
 upgradetypes.UpgradeHandler {
     return func(goCtx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
     ctx := sdk.UnwrapSDKContext(goCtx)
-    / explicitly update the IBC 02-client params, adding the wasm client type
+    // explicitly update the IBC 02-client params, adding the wasm client type
     params := clientKeeper.GetParams(ctx)
 
 params.AllowedClients = append(params.AllowedClients, ibcwasmtypes.Wasm)
@@ -401,7 +401,7 @@ RegisterUpgradeHandlers() {
 },
 }
 
-    / configure store loader that checks if version == upgradeHeight and applies store upgrades
+    // configure store loader that checks if version == upgradeHeight and applies store upgrades
     app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
 }
 }

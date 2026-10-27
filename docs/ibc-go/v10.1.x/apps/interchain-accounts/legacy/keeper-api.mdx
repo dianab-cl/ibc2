@@ -79,19 +79,19 @@ feeEnabledVersion, err := feetypes.ModuleCdc.MarshalJSON(&feeMetadata)
 The authentication module can attempt to send a packet by calling `SendTx`:
 
 ```go expandable
-/ Authenticate owner
-/ perform custom logic
+// Authenticate owner
+// perform custom logic
     
-/ Construct controller portID based on interchain account owner address
+// Construct controller portID based on interchain account owner address
 portID, err := icatypes.NewControllerPortID(owner.String())
     if err != nil {
     return err
 }
     
-/ Obtain data to be sent to the host chain. 
-/ In this example, the owner of the interchain account would like to send a bank MsgSend to the host chain. 
-/ The appropriate serialization function should be called. The host chain must be able to deserialize the transaction. 
-/ If the host chain is using the ibc-go host module, `SerializeCosmosTx` should be used. 
+// Obtain data to be sent to the host chain. 
+// In this example, the owner of the interchain account would like to send a bank MsgSend to the host chain. 
+// The appropriate serialization function should be called. The host chain must be able to deserialize the transaction. 
+// If the host chain is using the ibc-go host module, `SerializeCosmosTx` should be used. 
     msg := &banktypes.MsgSend{
     FromAddress: fromAddr,
     ToAddress: toAddr,
@@ -105,18 +105,18 @@ data, err := icatypes.SerializeCosmosTx(keeper.cdc, []proto.Message{
     return err
 }
 
-/ Construct packet data
+// Construct packet data
     packetData := icatypes.InterchainAccountPacketData{
     Type: icatypes.EXECUTE_TX,
     Data: data,
 }
 
-/ Obtain timeout timestamp
-/ An appropriate timeout timestamp must be determined based on the usage of the interchain account.
-/ If the packet times out, the channel will be closed requiring a new channel to be created.
+// Obtain timeout timestamp
+// An appropriate timeout timestamp must be determined based on the usage of the interchain account.
+// If the packet times out, the channel will be closed requiring a new channel to be created.
     timeoutTimestamp := obtainTimeoutTimestamp()
 
-/ Send the interchain accounts packet, returning the packet sequence
+// Send the interchain accounts packet, returning the packet sequence
 seq, err = keeper.icaControllerKeeper.SendTx(ctx, portID, packetData, timeoutTimestamp)
 ```
 

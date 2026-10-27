@@ -32,25 +32,25 @@ We need to register the core `ibc` and `transfer` `Keeper`s. To support the use 
 ```go title="app.go" expandable
 import (
 
-  / other imports
-  / ...
+  // other imports
+  // ...
   ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
   ibctransferkeeper "github.com/cosmos/ibc-go/v10/modules/apps/transfer/keeper"
-  / ibc v2 imports
+  // ibc v2 imports
   transferv2 "github.com/cosmos/ibc-go/v10/modules/apps/transfer/v2"
   ibccallbacksv2 "github.com/cosmos/ibc-go/v10/modules/apps/callbacks/v2"
 )
 
 type App struct {
-  / baseapp, keys and subspaces definitions
+  // baseapp, keys and subspaces definitions
 
-  / other keepers
-  / ...
+  // other keepers
+  // ...
   IBCKeeper        *ibckeeper.Keeper / IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
   TransferKeeper   ibctransferkeeper.Keeper / for cross-chain fungible token transfers
 
-  / ...
-  / module and simulation manager definitions
+  // ...
+  // module and simulation manager definitions
 }
 ```
 
@@ -66,8 +66,8 @@ Initialize the IBC `Keeper`s (for core `ibc` and `transfer` modules), and any ad
 ```go expandable
 import (
 
-  / other imports
-  / ...
+  // other imports
+  // ...
   authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
   ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
@@ -78,11 +78,11 @@ import (
 )
 
 func NewApp(...args) *App {
-  / define codecs and baseapp
+  // define codecs and baseapp
 
-  / ... other module keepers
+  // ... other module keepers
 
-  / Create IBC Keeper
+  // Create IBC Keeper
   app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibcexported.StoreKey]),
@@ -91,7 +91,7 @@ func NewApp(...args) *App {
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-  / Create Transfer Keeper
+  // Create Transfer Keeper
   app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
 		runtime.NewKVStoreService(keys[ibctransfertypes.StoreKey]),
@@ -104,7 +104,7 @@ func NewApp(...args) *App {
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-  / ... continues
+  // ... continues
 }
 ```
 
@@ -113,16 +113,16 @@ func NewApp(...args) *App {
 Middleware stacks in IBC allow you to wrap an `IBCModule` with additional logic for packets and acknowledgements. This is a chain of handlers that execute in order. The transfer stack below shows how to wire up transfer to use packet forward middleware, and the callbacks middleware. Note that the order is important.
 
 ```go expandable
-/ Create Transfer Stack for IBC Classic
+// Create Transfer Stack for IBC Classic
     maxCallbackGas := uint64(10_000_000)
     wasmStackIBCHandler := wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCKeeper.ChannelKeeper)
 
 var transferStack porttypes.IBCModule
 transferStack = transfer.NewIBCModule(app.TransferKeeper)
-/ callbacks wraps the transfer stack as its base app, and uses PacketForwardKeeper as the ICS4Wrapper
-/ i.e. packet-forward-middleware is higher on the stack and sits between callbacks and the ibc channel keeper
-/ Since this is the lowest level middleware of the transfer stack, it should be the first entrypoint for transfer keeper's
-/ WriteAcknowledgement.
+// callbacks wraps the transfer stack as its base app, and uses PacketForwardKeeper as the ICS4Wrapper
+// i.e. packet-forward-middleware is higher on the stack and sits between callbacks and the ibc channel keeper
+// Since this is the lowest level middleware of the transfer stack, it should be the first entrypoint for transfer keeper's
+// WriteAcknowledgement.
     cbStack := ibccallbacks.NewIBCMiddleware(transferStack, app.PacketForwardKeeper, wasmStackIBCHandler, maxCallbackGas)
 
 transferStack = packetforward.NewIBCMiddleware(
@@ -138,8 +138,8 @@ transferStack = packetforward.NewIBCMiddleware(
 For IBC v2, an example transfer stack is shown below. In this case the transfer stack is using the callbacks middleware.
 
 ```go
-/ Create IBC v2 transfer middleware stack
-/ the callbacks gas limit is recommended to be 10M for use with wasm contracts
+// Create IBC v2 transfer middleware stack
+// the callbacks gas limit is recommended to be 10M for use with wasm contracts
     maxCallbackGas := uint64(10_000_000)
     wasmStackIBCHandler := wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCKeeper.ChannelKeeper)
 
@@ -166,24 +166,24 @@ Once the `Router` has been set, no new routes can be added.
 ```go title="app.go" expandable
 import (
 
-  / other imports
-  / ...
+  // other imports
+  // ...
   porttypes "github.com/cosmos/ibc-go/v10/modules/core/05-port/types"
   ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 )
 
 func NewApp(...args) *App {
-  / .. continuation from above
+  // .. continuation from above
 
-  / Create static IBC router, add transfer module route, then set and seal it
+  // Create static IBC router, add transfer module route, then set and seal it
     ibcRouter := porttypes.NewRouter()
 
 ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferStack)
-  / Setting Router will finalize all routes by sealing router
-  / No more routes can be added
+  // Setting Router will finalize all routes by sealing router
+  // No more routes can be added
   app.IBCKeeper.SetRouter(ibcRouter)
 
-  / ... continues
+  // ... continues
 ```
 
 #### IBC v2 Router
@@ -191,12 +191,12 @@ ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferStack)
 With IBC v2, there is a new [router](https://github.com/cosmos/ibc-go/blob/main/modules/core/api/router.go) that needs to register the routes for a portID to a given IBCModule.
 
 ```go
-/ IBC v2 router creation
+// IBC v2 router creation
 	ibcRouterV2 := ibcapi.NewRouter()
 
 ibcRouterV2.AddRoute(ibctransfertypes.PortID, ibcv2TransferStack)
-  / Setting Router will finalize all routes by sealing router
-  / No more routes can be added
+  // Setting Router will finalize all routes by sealing router
+  // No more routes can be added
 	app.IBCKeeper.SetRouterV2(ibcRouterV2)
 ```
 
@@ -207,8 +207,8 @@ In order to use IBC, we need to add the new modules to the module `Manager` and 
 ```go title="app.go" expandable
 import (
 
-  / other imports
-  / ...
+  // other imports
+  // ...
   "github.com/cosmos/cosmos-sdk/types/module"
 
   ibc "github.com/cosmos/ibc-go/v10/modules/core"
@@ -216,28 +216,28 @@ import (
 )
 
 func NewApp(...args) *App {
-  / ... continuation from above
+  // ... continuation from above
 
   app.ModuleManager = module.NewManager(
-    / other modules
-    / ...
-    / highlight-start
+    // other modules
+    // ...
+    // highlight-start
 +   ibc.NewAppModule(app.IBCKeeper),
 +   transfer.NewAppModule(app.TransferKeeper),
-    / highlight-end
+    // highlight-end
   )
 
-  / ...
+  // ...
 
   app.simulationManager = module.NewSimulationManagerFromAppModules(
-    / other modules
-    / ...
+    // other modules
+    // ...
     app.ModuleManager.Modules,
     map[string]module.AppModuleSimulation{
 },
   )
 
-  / ... continues
+  // ... continues
 ```
 
 ### Module account permissions
@@ -248,21 +248,21 @@ the `transfer` `ModuleAccount` to mint and burn relayed tokens.
 ```go title="app.go" expandable
 import (
 
-  / other imports
-  / ...
+  // other imports
+  // ...
   "github.com/cosmos/cosmos-sdk/types/module"
   authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-  / highlight-next-line
+  // highlight-next-line
 + ibctransfertypes "github.com/cosmos/ibc-go/v10/modules/apps/transfer/types"
 )
 
-/ app.go
+// app.go
 var (
-  / module account permissions
+  // module account permissions
   maccPerms = map[string][]string{
-    / other module accounts permissions
-    / ...
+    // other module accounts permissions
+    // ...
     ibctransfertypes.ModuleName: {
     authtypes.Minter, authtypes.Burner
 },
@@ -279,28 +279,28 @@ All light clients must be registered with `module.Manager` in a chain's app.go f
 ```go title="app.go" expandable
 import (
 
-  / other imports
-  / ...
+  // other imports
+  // ...
   "github.com/cosmos/cosmos-sdk/types/module"
-  / highlight-next-line
+  // highlight-next-line
 + ibctm "github.com/cosmos/ibc-go/v10/modules/light-clients/07-tendermint"
 )
 
-/ app.go
-/ after sealing the IBC router
+// app.go
+// after sealing the IBC router
     clientKeeper := app.IBCKeeper.ClientKeeper
     storeProvider := app.IBCKeeper.ClientKeeper.GetStoreProvider()
     tmLightClientModule := ibctm.NewLightClientModule(appCodec, storeProvider)
 
 clientKeeper.AddRoute(ibctm.ModuleName, &tmLightClientModule)
-/ ...
+// ...
 app.ModuleManager = module.NewManager(
-  / ...
+  // ...
   ibc.NewAppModule(app.IBCKeeper),
   transfer.NewAppModule(app.TransferKeeper), / i.e ibc-transfer module
 
-  / register light clients on IBC
-  / highlight-next-line
+  // register light clients on IBC
+  // highlight-next-line
 + ibctm.NewAppModule(tmLightClientModule),
 )
 ```
@@ -308,7 +308,7 @@ app.ModuleManager = module.NewManager(
 #### Allowed Clients Params
 
 The allowed clients parameter defines an allow list of client types supported by the chain. The
-default value is a single-element list containing the [`AllowedClients`](https://github.com/cosmos/ibc-go/blob/main/modules/core/02-client/types/client.pb.go#L248-L253) wildcard (`"*"`). Alternatively, the parameter
+default value is a single-element list containing the [`AllowedClients`](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/core/02-client/types/client.pb.go#L248-L253) wildcard (`"*"`). Alternatively, the parameter
 may be set with a list of client types (e.g. `"06-solomachine","07-tendermint","09-localhost"`).
 A client type that is not registered on this list will fail upon creation or on genesis validation.
 Note that, since the client type is an arbitrary string, chains must not register two light clients
@@ -325,8 +325,8 @@ connection handshake.
 ```go title="app.go" expandable
 import (
 
-  / other imports
-  / ...
+  // other imports
+  // ...
   stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
   ibcexported "github.com/cosmos/ibc-go/v10/modules/core/exported"
   ibckeeper "github.com/cosmos/ibc-go/v10/modules/core/keeper"
@@ -334,34 +334,34 @@ import (
 )
 
 func NewApp(...args) *App {
-  / ... continuation from above
+  // ... continuation from above
 
-  / add x/staking, ibc and transfer modules to BeginBlockers
+  // add x/staking, ibc and transfer modules to BeginBlockers
   app.ModuleManager.SetOrderBeginBlockers(
-    / other modules ...
+    // other modules ...
     stakingtypes.ModuleName,
     ibcexported.ModuleName,
     ibctransfertypes.ModuleName,
   )
 
 app.ModuleManager.SetOrderEndBlockers(
-    / other modules ...
+    // other modules ...
     stakingtypes.ModuleName,
     ibcexported.ModuleName,
     ibctransfertypes.ModuleName,
   )
 
-  / ...
+  // ...
     genesisModuleOrder := []string{
-    / other modules
-    / ...
+    // other modules
+    // ...
     ibcexported.ModuleName,
     ibctransfertypes.ModuleName,
 }
 
 app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 
-  / ... continues
+  // ... continues
 ```
 
 That's it! You have now wired up the IBC module and the `transfer` module, and are now able to send fungible tokens across

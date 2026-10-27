@@ -17,7 +17,7 @@ The `ConnectionEnd` is created and set in store via the `InitGenesis` handler of
 The `ConnectionEnd` and its `Counterparty` both reference the `09-localhost` client identifier, and share the localhost connection identifier `connection-localhost`.
 
 ```go
-/ CreateSentinelLocalhostConnection creates and sets the sentinel localhost connection end in the IBC store.
+// CreateSentinelLocalhostConnection creates and sets the sentinel localhost connection end in the IBC store.
 func (k Keeper)
 
 CreateSentinelLocalhostConnection(ctx sdk.Context) {

@@ -22,21 +22,21 @@ handshake callbacks for IBC classic only, and packet handling callbacks for IBC 
 must be registered with the module name as a route on the IBC `Router`.
 
 ```go expandable
-/ app.go
+// app.go
 func NewApp(...args) *App {
-  / ...
+  // ...
 
-  / Create static IBC router, add module routes, then set and seal it
+  // Create static IBC router, add module routes, then set and seal it
     ibcRouter := port.NewRouter()
 
 ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
-  / Note: moduleCallbacks must implement IBCModule interface
+  // Note: moduleCallbacks must implement IBCModule interface
   ibcRouter.AddRoute(moduleName, moduleCallbacks)
 
-  / Setting Router will finalize all routes by sealing router
-  / No more routes can be added
+  // Setting Router will finalize all routes by sealing router
+  // No more routes can be added
   app.IBCKeeper.SetRouter(ibcRouter)
 
-  / ...
+  // ...
 }
 ```

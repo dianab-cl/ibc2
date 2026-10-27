@@ -297,7 +297,7 @@ app.ModuleManager = module.NewManager(
 #### Allowed Clients Params
 
 The allowed clients parameter defines an allow list of client types supported by the chain. The
-default value is a single-element list containing the [`AllowedClients`](https://github.com/cosmos/ibc-go/blob/main/modules/core/02-client/types/client.pb.go#L248-L253) wildcard (`"*"`). Alternatively, the parameter
+default value is a single-element list containing the [`AllowedClients`](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/core/02-client/types/client.pb.go#L248-L253) wildcard (`"*"`). Alternatively, the parameter
 may be set with a list of client types (e.g. `"06-solomachine","07-tendermint","09-localhost"`).
 A client type that is not registered on this list will fail upon creation or on genesis validation.
 Note that, since the client type is an arbitrary string, chains must not register two light clients

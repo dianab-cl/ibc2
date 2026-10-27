@@ -23,44 +23,44 @@ Currently, ports must be bound on app initialization. In order to bind modules t
 ```protobuf
 message GenesisState {
   string port_id = 1;
-  / other fields
+  // other fields
 }
 ```
 
 2. Add port ID as a key to the module store:
 
 ```go expandable
-/ x/<moduleName>/types/keys.go
+// x/<moduleName>/types/keys.go
 const (
-  / ModuleName defines the IBC Module name
+  // ModuleName defines the IBC Module name
   ModuleName = "moduleName"
 
-  / Version defines the current version the IBC
-  / module supports
+  // Version defines the current version the IBC
+  // module supports
   Version = "moduleVersion-1"
 
-  / PortID is the default port id that module binds to
+  // PortID is the default port id that module binds to
   PortID = "portID"
 
-  / ...
+  // ...
 )
 ```
 
 3. Add port ID to `x/<moduleName>/types/genesis.go`:
 
 ```go expandable
-/ in x/<moduleName>/types/genesis.go
+// in x/<moduleName>/types/genesis.go
 
-/ DefaultGenesisState returns a GenesisState with "portID" as the default PortID.
+// DefaultGenesisState returns a GenesisState with "portID" as the default PortID.
 func DefaultGenesisState() *GenesisState {
     return &GenesisState{
     PortId:      PortID,
-    / additional k-v fields
+    // additional k-v fields
 }
 }
 
-/ Validate performs basic genesis state validation returning an error upon any
-/ failure.
+// Validate performs basic genesis state validation returning an error upon any
+// failure.
 func (gs GenesisState)
 
 Validate()
@@ -69,7 +69,7 @@ error {
     if err := host.PortIdentifierValidator(gs.PortId); err != nil {
     return err
 }
-  /additional validations
+  // additional validations
 
   return gs.Params.Validate()
 }
@@ -82,7 +82,7 @@ error {
 </Note>
 
 ```go expandable
-/ SetPort sets the portID for the transfer module. Used in InitGenesis
+// SetPort sets the portID for the transfer module. Used in InitGenesis
 func (k Keeper)
 
 SetPort(ctx sdk.Context, portID string) {
@@ -92,7 +92,7 @@ SetPort(ctx sdk.Context, portID string) {
 }
 }
 
-  / Initialize any other module state, like params with SetParams.
+  // Initialize any other module state, like params with SetParams.
 func (k Keeper)
 
 SetParams(ctx sdk.Context, params types.Params) {
@@ -102,7 +102,7 @@ SetParams(ctx sdk.Context, params types.Params) {
     panic(err)
 }
 }
-  / ...
+  // ...
 ```
 
 The module is set to the desired port. The setting and sealing happens during creation of the IBC router.

@@ -38,16 +38,16 @@ func NewTransferAuthorization(allocations ...Allocation) *TransferAuthorization 
 }
 
 type Allocation struct {
-  / the port on which the packet will be sent
+  // the port on which the packet will be sent
   SourcePort string 
-  / the channel by which the packet will be sent
+  // the channel by which the packet will be sent
   SourceChannel string 
-  / spend limitation on the channel
+  // spend limitation on the channel
   SpendLimit sdk.Coins  
-  / allow list of receivers, an empty allow list permits any receiver address
+  // allow list of receivers, an empty allow list permits any receiver address
   AllowList []string 
-  / allow list of memo strings, an empty list prohibits all memo strings;
-  / a list only with "*" permits any memo string
+  // allow list of memo strings, an empty list prohibits all memo strings;
+  // a list only with "*" permits any memo string
   AllowedPacketData []string
 }
 ```

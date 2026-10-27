@@ -49,9 +49,9 @@ Wire up each light client as a separate module and add them to the client keeper
 Remove ibc fee module name (if used) from module account permissions:
 
 ```diff
-  / app.go
+  // app.go
   ...
-  / module account permissions
+  // module account permissions
   var maccPerms = map[string][]string{
     ...
 -   ibcfeetypes.ModuleName:      nil,
@@ -62,7 +62,7 @@ Remove ibc fee module name (if used) from module account permissions:
 Remove `CapabilityKeeper`, `IBCFeeKeeper` and all `capabilitykeeper.ScopedKeeper` Scoped keepers from the App struct:
 
 ```diff expandable
-  / ChainApp extended ABCI application
+  // ChainApp extended ABCI application
   type ChainApp struct {
     ...
 -	CapabilityKeeper      *capabilitykeeper.Keeper
@@ -201,7 +201,7 @@ Remove IBC Fee Module keeper:
 Update Transfer stack to remove the fee middleware. The example below shows the correct way to wire up a middleware stack with the IBC callbacks middleware:
 
 ```diff expandable
-  / Create Transfer Stack
+  // Create Transfer Stack
   var transferStack porttypes.IBCModule
   transferStack = transfer.NewIBCModule(app.TransferKeeper)
 - transferStack = ibccallbacks.NewIBCMiddleware(transferStack, app.IBCFeeKeeper, wasmStackIBCHandler, maxCallbackGas)

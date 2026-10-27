@@ -19,7 +19,7 @@ In the previous sections, on channel handshake callbacks and port binding in `In
 > Note that some code has been left out for clarity, to get a full code overview, please refer to [the transfer module's keeper in the ibc-go repo](https://github.com/cosmos/ibc-go/blob/main/modules/apps/transfer/keeper/keeper.go).
 
 ```go expandable
-/ Keeper defines the IBC app module keeper
+// Keeper defines the IBC app module keeper
 type Keeper struct {
     storeKey   sdk.StoreKey
   cdc        codec.BinaryCodec
@@ -28,16 +28,16 @@ type Keeper struct {
   channelKeeper types.ChannelKeeper
   portKeeper    types.PortKeeper
 
-  / ... additional according to custom logic
+  // ... additional according to custom logic
 }
 
-/ NewKeeper creates a new IBC app module Keeper instance
+// NewKeeper creates a new IBC app module Keeper instance
 func NewKeeper(
-  / args
+  // args
 )
 
 Keeper {
-  / ...
+  // ...
 
   return Keeper{
     cdc:           cdc,
@@ -47,11 +47,11 @@ Keeper {
     channelKeeper: channelKeeper,
     portKeeper:    portKeeper,
 
-    / ... additional according to custom logic
+    // ... additional according to custom logic
 }
 }
 
-/ GetPort returns the portID for the IBC app module. Used in ExportGenesis
+// GetPort returns the portID for the IBC app module. Used in ExportGenesis
 func (k Keeper)
 
 GetPort(ctx sdk.Context)
@@ -62,7 +62,7 @@ string {
 return string(store.Get(types.PortKey))
 }
 
-/ SetPort sets the portID for the IBC app module. Used in InitGenesis
+// SetPort sets the portID for the IBC app module. Used in InitGenesis
 func (k Keeper)
 
 SetPort(ctx sdk.Context, portID string) {
@@ -71,5 +71,5 @@ SetPort(ctx sdk.Context, portID string) {
 store.Set(types.PortKey, []byte(portID))
 }
 
-/ ... additional according to custom logic
+// ... additional according to custom logic
 ```

@@ -25,12 +25,12 @@ Highlighted improvements for app developers with IBC v2:
 ## Implement the `IBCModule` interface
 
 The Cosmos SDK expects all IBC modules to implement the [`IBCModule`
-interface](https://github.com/cosmos/ibc-go/blob/main/modules/core/api/module.go#L9-L53). This interface contains all of the callbacks IBC expects modules to implement. Note that for IBC v2, an application developer no longer needs to implement callbacks for the channel handshake. Note that this interface is distinct from the [porttypes.IBCModule interface][porttypes.IBCModule] used for IBC Classic.
+interface](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/core/api/module.go#L9-L53). This interface contains all of the callbacks IBC expects modules to implement. Note that for IBC v2, an application developer no longer needs to implement callbacks for the channel handshake. Note that this interface is distinct from the [porttypes.IBCModule interface][porttypes.IBCModule] used for IBC Classic.
 
 ```go
-/ IBCModule implements the application interface given the keeper.
-/ The implementation of the IBCModule interface could for example be in a file called ibc_module.go,
-/ but ultimately file structure is up to the developer
+// IBCModule implements the application interface given the keeper.
+// The implementation of the IBCModule interface could for example be in a file called ibc_module.go,
+// but ultimately file structure is up to the developer
 type IBCModule struct {
     keeper keeper.Keeper
 }
@@ -44,7 +44,7 @@ var (
 }
   _ module.AppModuleBasic = AppModuleBasic{
 }
-  / Add this line
+  // Add this line
   _ porttypes.IBCModule   = IBCModule{
 }
 )
@@ -67,12 +67,12 @@ Briefly, a successful packet flow works as follows:
 
 #### Sending packets
 
-[`MsgSendPacket`](https://github.com/cosmos/ibc-go/blob/main/modules/core/04-channel/v2/types/tx.pb.go#L69-L75) is sent by a user to the [channel v2 message server](https://github.com/cosmos/ibc-go/blob/main/modules/core/04-channel/v2/keeper/msg_server.go), which calls `ChannelKeeperV2.SendPacket`. This validates the message, creates the packet, stores the commitment and returns the packet sequence number. The application must specify its own payload which is used by the application and sent with `MsgSendPacket`.
+[`MsgSendPacket`](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/core/04-channel/v2/types/tx.pb.go#L69-L75) is sent by a user to the [channel v2 message server](https://github.com/cosmos/ibc-go/blob/main/modules/core/04-channel/v2/keeper/msg_server.go), which calls `ChannelKeeperV2.SendPacket`. This validates the message, creates the packet, stores the commitment and returns the packet sequence number. The application must specify its own payload which is used by the application and sent with `MsgSendPacket`.
 
 An application developer needs to implement the custom logic the application executes when a packet is sent.
 
 ```go expandable
-/ OnSendPacket logic
+// OnSendPacket logic
 func (im *IBCModule)
 
 OnSendPacket(
@@ -85,13 +85,13 @@ OnSendPacket(
 
 error {
 
-/ implement any validation
+// implement any validation
 
-/ implement payload decoding and validation
+// implement payload decoding and validation
 
-/ call the relevant keeper method for state changes as a result of application logic
+// call the relevant keeper method for state changes as a result of application logic
 
-/ emit events or telemetry data
+// emit events or telemetry data
 
 return nil
 }
@@ -124,8 +124,8 @@ OnRecvPacket(
 
 channeltypesv2.RecvPacketResult {
 
-  / do application state changes based on payload and return the result
-  / state changes should be written via the `RecvPacketResult`
+  // do application state changes based on payload and return the result
+  // state changes should be written via the `RecvPacketResult`
 
   return recvResult
 }
@@ -148,13 +148,13 @@ OnAcknowledgementPacket(
 
 error {
 
-  / check the type of the acknowledgement
+  // check the type of the acknowledgement
 
-  / if not ackErr, unmarshal the JSON acknowledgement and unmarshal packet payload
+  // if not ackErr, unmarshal the JSON acknowledgement and unmarshal packet payload
 
-  / perform any application specific logic for processing acknowledgement
+  // perform any application specific logic for processing acknowledgement
 
-  / emit events
+  // emit events
 
   return nil
 }
@@ -176,9 +176,9 @@ OnTimeoutPacket(
 
 error {
 
-    / unmarshal packet data
+    // unmarshal packet data
 
-    / do custom timeout logic, e.g. refund tokens for transfer
+    // do custom timeout logic, e.g. refund tokens for transfer
 }
 ```
 
@@ -188,8 +188,8 @@ The `PacketDataUnmarshaler` interface is required for IBC v2 applications to imp
 
 ```go
 type PacketDataUnmarshaler interface {
-	/ UnmarshalPacketData unmarshals the packet data into a concrete type
-	/ the payload is provided and the packet data interface is returned
+	// UnmarshalPacketData unmarshals the packet data into a concrete type
+	// the payload is provided and the packet data interface is returned
 	UnmarshalPacketData(payload channeltypesv2.Payload) (interface{
 }, error)
 }
@@ -206,7 +206,7 @@ Add port ID to the `GenesisState` proto definition:
 ```protobuf
 message GenesisState {
   string port_id = 1;
-  / other fields
+  // other fields
 }
 ```
 
@@ -215,36 +215,36 @@ You can see an example for transfer [here](https://github.com/cosmos/ibc-go/blob
 Add port ID as a key to the module store:
 
 ```go
-/ x/<moduleName>/types/keys.go
+// x/<moduleName>/types/keys.go
 const (
-  / ModuleName defines the IBC Module name
+  // ModuleName defines the IBC Module name
   ModuleName = "moduleName"
 
-  / PortID is the default port id that module binds to
+  // PortID is the default port id that module binds to
   PortID = "portID"
 
-  / ...
+  // ...
 )
 ```
 
-Note that with IBC v2, the version does not need to be added as a key (as required with IBC classic) because versioning of applications is now contained within the [packet Payload](https://github.com/cosmos/ibc-go/blob/main/modules/core/04-channel/v2/types/packet.go#L23-L32).
+Note that with IBC v2, the version does not need to be added as a key (as required with IBC classic) because versioning of applications is now contained within the [packet Payload](https://github.com/cosmos/ibc-go/blob/4dc625ae138c52bfe5b8585c24de9b16ddcf6186/modules/core/04-channel/v2/types/packet.go#L23-L32).
 
 Add port ID to `x/<moduleName>/types/genesis.go`:
 
 ```go expandable
-/ in x/<moduleName>/types/genesis.go
+// in x/<moduleName>/types/genesis.go
 
-/ DefaultGenesisState returns a GenesisState
-/ with the portID defined in keys.go
+// DefaultGenesisState returns a GenesisState
+// with the portID defined in keys.go
 func DefaultGenesisState() *GenesisState {
     return &GenesisState{
     PortId:      PortID,
-    / additional k-v fields
+    // additional k-v fields
 }
 }
 
-/ Validate performs basic genesis state validation
-/  returning an error upon any failure.
+// Validate performs basic genesis state validation
+//  returning an error upon any failure.
 func (gs GenesisState)
 
 Validate()
@@ -253,7 +253,7 @@ error {
     if err := host.PortIdentifierValidator(gs.PortId); err != nil {
     return err
 }
-  /additional validations
+  // additional validations
 
   return gs.Params.Validate()
 }
@@ -262,7 +262,7 @@ error {
 Set the port in the module keeper's for `InitGenesis`:
 
 ```go expandable
-/ SetPort sets the portID for the transfer module. Used in InitGenesis
+// SetPort sets the portID for the transfer module. Used in InitGenesis
 func (k Keeper)
 
 SetPort(ctx sdk.Context, portID string) {
@@ -272,7 +272,7 @@ SetPort(ctx sdk.Context, portID string) {
 }
 }
 
-  / Initialize any other module state, like params with SetParams.
+  // Initialize any other module state, like params with SetParams.
 func (k Keeper)
 
 SetParams(ctx sdk.Context, params types.Params) {
@@ -282,7 +282,7 @@ SetParams(ctx sdk.Context, params types.Params) {
     panic(err)
 }
 }
-  / ...
+  // ...
 ```
 
 The module is set to the desired port. The setting and sealing happens during creation of the IBC router.
@@ -296,18 +296,18 @@ More information on implementing the IBCModule Keepers can be found in the [keep
 Applications developers need to define the `Payload` contained within an [IBC packet](https://github.com/cosmos/ibc-go/blob/fe25b216359fab71b3228461b05dbcdb1a554158/proto/ibc/core/channel/v2/packet.proto#L11-L24). Note that in IBC v2 the `timeoutHeight` has been removed and only `timeoutTimestamp` is used. A packet can contain multiple payloads in a list. Each Payload includes:
 
 ```go expandable
-/ Payload contains the source and destination ports and payload for the application (version, encoding, raw bytes)
+// Payload contains the source and destination ports and payload for the application (version, encoding, raw bytes)
 
 message Payload {
-  / specifies the source port of the packet.
+  // specifies the source port of the packet.
   string source_port = 1;
-  / specifies the destination port of the packet.
+  // specifies the destination port of the packet.
   string destination_port = 2;
-  / version of the specified application.
+  // version of the specified application.
   string version = 3;
-  / the encoding used for the provided value.
+  // the encoding used for the provided value.
   string encoding = 4;
-  / the raw bytes for the payload.
+  // the raw bytes for the payload.
   bytes value = 5;
 }
 ```
@@ -320,12 +320,12 @@ type MyAppPayloadData struct {
     Field2 uint64
 }
 
-/ Marshal your payload to bytes using your encoding
+// Marshal your payload to bytes using your encoding
 bz, err := json.Marshal(MyAppPayloadData{
     Field1: "example", Field2: 7
 })
 
-/ Wrap it in a channel v2 Payload
+// Wrap it in a channel v2 Payload
     payload := channeltypesv2.NewPayload(
     sourcePort,
     destPort,

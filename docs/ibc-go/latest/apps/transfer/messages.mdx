@@ -10,19 +10,19 @@ A fungible token cross chain transfer is achieved by using the `MsgTransfer`:
 ```go expandable
 type MsgTransfer struct {
     SourcePort        string
-  / with IBC v2 SourceChannel will be a client ID
+  // with IBC v2 SourceChannel will be a client ID
   SourceChannel     string 
   Token             sdk.Coin
   Sender            string
   Receiver          string
-  / If you are sending with IBC v1 protocol, either timeout_height or timeout_timestamp must be set.
-  / If you are sending with IBC v2 protocol, timeout_timestamp must be set, and timeout_height must be omitted. 
+  // If you are sending with IBC v1 protocol, either timeout_height or timeout_timestamp must be set.
+  // If you are sending with IBC v2 protocol, timeout_timestamp must be set, and timeout_height must be omitted. 
   TimeoutHeight     ibcexported.Height
-  / Timeout timestamp in absolute nanoseconds since unix epoch.
+  // Timeout timestamp in absolute nanoseconds since unix epoch.
   TimeoutTimestamp  uint64
-  / optional Memo field
+  // optional Memo field
   Memo              string
-  / optional Encoding field 
+  // optional Encoding field 
   Encoding          string
 }
 ```
@@ -56,7 +56,7 @@ For example, the following memo field is used by the callbacks middleware to att
 {
   "src_callback": {
   "address": "callbackAddressString",
-    / optional
+    // optional
     "gas_limit": "userDefinedGasLimitString",
   }
 }

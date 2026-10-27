@@ -57,7 +57,7 @@ Ex:
 ```go expandable
 app.UpgradeKeeper.SetUpgradeHandler("my-upgrade-proposal",
   func(ctx sdk.Context, _ upgradetypes.Plan, _ module.VersionMap) (module.VersionMap, error) {
-    / set max expected block time parameter. Replace the default with your expected value
+    // set max expected block time parameter. Replace the default with your expected value
     app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
     fromVM := map[string]uint64{
       ... / other modules
@@ -74,7 +74,7 @@ return app.mm.RunMigrations(ctx, app.configurator, fromVM)
 To perform genesis migrations, the following code must be added to your existing migration code.
 
 ```go expandable
-/ add imports as necessary
+// add imports as necessary
 import (
     
   ibcv100 "github.com/cosmos/ibc-go/modules/core/legacy/v100"
@@ -83,8 +83,8 @@ import (
 
 ...
 
-/ add in migrate cmd function
-/ expectedTimePerBlock is a new connection parameter
+// add in migrate cmd function
+// expectedTimePerBlock is a new connection parameter
 newGenState, err = ibcv100.MigrateGenesis(newGenState, clientCtx, *genDoc, expectedTimePerBlock)
     if err != nil {
     return err
@@ -98,7 +98,7 @@ newGenState, err = ibcv100.MigrateGenesis(newGenState, clientCtx, *genDoc, expec
 The IBC Keeper now takes in the Upgrade Keeper. Please add the chains' Upgrade Keeper after the Staking Keeper:
 
 ```diff
-/ Create IBC Keeper
+// Create IBC Keeper
 app.IBCKeeper = ibckeeper.NewKeeper(
 - appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, scopedIBCKeeper,
 + appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, app.UpgradeKeeper, scopedIBCKeeper,

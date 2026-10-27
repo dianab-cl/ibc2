@@ -45,14 +45,14 @@ Current parameter values can be queried via a query message.
 {/* Turn it into a github code snippet in docusaurus: */}
 
 ```protobuf
-/ proto/ibc/03-applications/transfer/v1/query.proto
+// proto/ibc/03-applications/transfer/v1/query.proto
 
-/ QueryParamsRequest is the request type for the Query/Params RPC method.
+// QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
-/ QueryParamsResponse is the response type for the Query/Params RPC method.
+// QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  / params defines the parameters of the module.
+  // params defines the parameters of the module.
   Params params = 1;
 }
 ```
@@ -70,20 +70,20 @@ To change the parameter values, you must make a governance proposal that execute
 {/* Turn it into a github code snippet in docusaurus: */}
 
 ```protobuf expandable
-/ proto/ibc/03-applications/transfer/v1/tx.proto
+// proto/ibc/03-applications/transfer/v1/tx.proto
 
-/ MsgUpdateParams is the Msg/UpdateParams request type.
+// MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
-  / signer address (it may be the address that controls the module, which defaults to x/gov unless overwritten).
+  // signer address (it may be the address that controls the module, which defaults to x/gov unless overwritten).
   string signer = 1;
 
-  / params defines the transfer parameters to update.
-  /
-  / NOTE: All parameters must be supplied.
+  // params defines the transfer parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
   Params params = 2 [(gogoproto.nullable) = false];
 }
 
-/ MsgUpdateParamsResponse defines the response structure for executing a
-/ MsgUpdateParams message.
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
 message MsgUpdateParamsResponse {}
 ```

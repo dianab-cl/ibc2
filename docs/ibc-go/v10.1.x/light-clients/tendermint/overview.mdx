@@ -29,55 +29,55 @@ The Tendermint light client is initialized with a `ClientState` that contains pa
 
 ```proto expandable
 message ClientState {
-  / human readable chain-id that will be included in header
-  / and signed over by the validator set
+  // human readable chain-id that will be included in header
+  // and signed over by the validator set
   string   chain_id    = 1;
-  / trust level is the fraction of the trusted validator set
-  / that must sign over a new untrusted header before it is accepted
-  / it can be a minimum of 1/3 and a maximum of 2/3
-  / Note these are the bounds of liveness. 1/3 is the minimum
-  / honest stake needed to maintain liveness on a chain,
-  / requiring more than 2/3 to sign over the new header would
-  / break the BFT threshold of allowing 1/3 malicious validators
+  // trust level is the fraction of the trusted validator set
+  // that must sign over a new untrusted header before it is accepted
+  // it can be a minimum of 1/3 and a maximum of 2/3
+  // Note these are the bounds of liveness. 1/3 is the minimum
+  // honest stake needed to maintain liveness on a chain,
+  // requiring more than 2/3 to sign over the new header would
+  // break the BFT threshold of allowing 1/3 malicious validators
   Fraction trust_level = 2;
-  / duration of the period since the LatestTimestamp during which the
-  / submitted headers are valid for update
+  // duration of the period since the LatestTimestamp during which the
+  // submitted headers are valid for update
   google.protobuf.Duration trusting_period = 3;
-  / duration of the staking unbonding period
+  // duration of the staking unbonding period
   google.protobuf.Duration unbonding_period = 4;
-  / defines how much new (untrusted) header's Time can drift
-  / into the future relative to our local clock.
+  // defines how much new (untrusted) header's Time can drift
+  // into the future relative to our local clock.
   google.protobuf.Duration max_clock_drift = 5;
 
-  / Block height when the client was frozen due to a misbehaviour
+  // Block height when the client was frozen due to a misbehaviour
   ibc.core.client.v1.Height frozen_height = 6;
-  / Latest height the client was updated to
+  // Latest height the client was updated to
   ibc.core.client.v1.Height latest_height = 7;
 
-  / Proof specifications used in verifying counterparty state
+  // Proof specifications used in verifying counterparty state
   repeated cosmos.ics23.v1.ProofSpec proof_specs = 8;
 
-  / Path at which next upgraded client will be committed.
-  / Each element corresponds to the key for a single CommitmentProof in the
-  / chained proof. NOTE: ClientState must be stored under
-  / `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored
-  / under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using
-  / the default upgrade module, upgrade_path should be []string{"upgrade",
-  / "upgradedIBCState"}`
+  // Path at which next upgraded client will be committed.
+  // Each element corresponds to the key for a single CommitmentProof in the
+  // chained proof. NOTE: ClientState must be stored under
+  // `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored
+  // under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using
+  // the default upgrade module, upgrade_path should be []string{"upgrade",
+  // "upgradedIBCState"}`
   repeated string upgrade_path = 9;
 }
 ```
 
 ```proto expandable
 message ConsensusState {
-  / timestamp that corresponds to the block height in which the ConsensusState
-  / was stored.
+  // timestamp that corresponds to the block height in which the ConsensusState
+  // was stored.
   google.protobuf.Timestamp timestamp = 1;
-  / commitment root (i.e., app hash) that will be used
-  / to verify proofs of packet flow messages
+  // commitment root (i.e., app hash) that will be used
+  // to verify proofs of packet flow messages
   ibc.core.commitment.v1.MerkleRoot root = 2;
-  / hash of the next validator set that will be used as
-  / a new updated source of trust to verify future updates
+  // hash of the next validator set that will be used as
+  // a new updated source of trust to verify future updates
   bytes next_validators_hash = 3;
 }
 ```
@@ -88,17 +88,17 @@ Once the initial client state and consensus state are submitted, future consensu
 
 ```proto expandable
 message Header {
-  / this is the new signed header that we want to add
-  / as a new consensus state to the ibc client.
-  / the signed header contains the commit signatures of the `validator_set` below
+  // this is the new signed header that we want to add
+  // as a new consensus state to the ibc client.
+  // the signed header contains the commit signatures of the `validator_set` below
   .tendermint.types.SignedHeader signed_header = 1;
 
-  / the validator set which signed the new header
+  // the validator set which signed the new header
   .tendermint.types.ValidatorSet validator_set      = 2;
-  / the trusted height of the consensus state which we are updating from
+  // the trusted height of the consensus state which we are updating from
   ibc.core.client.v1.Height      trusted_height     = 3;
-  / the trusted validator set, the hash of the trusted validators must be equal to
-  / `next_validators_hash` of the current consensus state
+  // the trusted validator set, the hash of the trusted validators must be equal to
+  // `next_validators_hash` of the current consensus state
   .tendermint.types.ValidatorSet trusted_validators = 4;
 }
 ```
@@ -110,11 +110,11 @@ For detailed information on the CometBFT light client protocol and its safety pr
 As consensus states are added to the client, they can be used for proof verification by relayers wishing to prove packet flow messages against a particular height on the counterparty. This uses the `VerifyMembership` and `VerifyNonMembership` methods on the Tendermint client.
 
 ```go expandable
-/ VerifyMembership is a generic proof verification method
-/which verifies a proof of the existence of a value at a
-/ given CommitmentPath at the specified height. The caller
-/ is expected to construct the full CommitmentPath from a
-/ CommitmentPrefix and a standardized path (as defined in ICS 24).
+// VerifyMembership is a generic proof verification method
+// which verifies a proof of the existence of a value at a
+// given CommitmentPath at the specified height. The caller
+// is expected to construct the full CommitmentPath from a
+// CommitmentPrefix and a standardized path (as defined in ICS 24).
 VerifyMembership(
     ctx sdk.Context,
     clientID string,
@@ -128,11 +128,11 @@ VerifyMembership(
 
 error
 
-/ VerifyNonMembership is a generic proof verification method
-/ which verifies the absence of a given CommitmentPath at a
-/ specified height. The caller is expected to construct the
-/ full CommitmentPath from a CommitmentPrefix and a standardized
-/ path (as defined in ICS 24).
+// VerifyNonMembership is a generic proof verification method
+// which verifies the absence of a given CommitmentPath at a
+// specified height. The caller is expected to construct the
+// full CommitmentPath from a CommitmentPrefix and a standardized
+// path (as defined in ICS 24).
 VerifyNonMembership(
     ctx sdk.Context,
     clientID string,

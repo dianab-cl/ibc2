@@ -32,10 +32,10 @@ The `AnteDecorator` type in `core/ante` has been renamed to `RedundantRelayDecor
 
 ```diff expandable
 func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
-  / parameter validation
+  // parameter validation
 
   anteDecorators := []sdk.AnteDecorator{
-    / other ante decorators
+    // other ante decorators
 -   ibcante.NewAnteDecorator(opts.IBCkeeper),
 +   ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
   }
@@ -148,7 +148,7 @@ The `key` and `msgRouter` parameters of the `NewKeeper` functions in
 have changed type. The `key` parameter is now of type `storetypes.StoreKey` (where `storetypes` is an import alias for `"github.com/cosmos/cosmos-sdk/store/types"`), and the `msgRouter` parameter is now of type `*icatypes.MessageRouter` (where `icatypes` is an import alias for `"github.com/cosmos/ibc-go/v5/modules/apps/27-interchain-accounts/types"`):
 
 ```diff expandable
-/ NewKeeper creates a new interchain accounts controller Keeper instance
+// NewKeeper creates a new interchain accounts controller Keeper instance
 func NewKeeper(
    cdc codec.BinaryCodec,
 -  key sdk.StoreKey,
@@ -164,7 +164,7 @@ func NewKeeper(
 ```
 
 ```diff expandable
-/ NewKeeper creates a new interchain accounts host Keeper instance
+// NewKeeper creates a new interchain accounts host Keeper instance
 func NewKeeper(
    cdc codec.BinaryCodec,
 -  key sdk.StoreKey,
@@ -219,10 +219,10 @@ txMsgData := &sdk.TxMsgData{
     Data: make([]*sdk.MsgData, len(msgs)),
 }
     for i, msg := range msgs {
-  / message validation
+  // message validation
 
   msgResponse, err := k.executeMsg(cacheCtx, msg)
-  / return if err != nil
+  // return if err != nil
 
   txMsgData.Data[i] = &sdk.MsgData{
     MsgType: sdk.MsgTypeURL(msg),
@@ -230,10 +230,10 @@ txMsgData := &sdk.TxMsgData{
 }
 }
 
-/ emit events
+// emit events
 
 txResponse, err := proto.Marshal(txMsgData)
-/ return if err != nil
+// return if err != nil
 
 return txResponse, nil
 ```
@@ -245,18 +245,18 @@ txMsgData := &sdk.TxMsgData{
     MsgResponses: make([]*codectypes.Any, len(msgs)),
 }
     for i, msg := range msgs {
-  / message validation
+  // message validation
 
   protoAny, err := k.executeMsg(cacheCtx, msg)
-  / return if err != nil
+  // return if err != nil
 
   txMsgData.MsgResponses[i] = protoAny
 }
 
-/ emit events
+// emit events
 
 txResponse, err := proto.Marshal(txMsgData)
-/ return if err != nil
+// return if err != nil
 
 return txResponse, nil
 ```
@@ -276,13 +276,13 @@ var txMsgData sdk.TxMsgData
     switch len(txMsgData.Data) {
     case 0: / for SDK 0.46 and above
     for _, msgResponse := range txMsgData.MsgResponses {
-    / unmarshall msgResponse and execute logic based on the response
+    // unmarshall msgResponse and execute logic based on the response
 }
 
 return nil
 default: / for SDK 0.45 and below
     for _, msgData := range txMsgData.Data {
-    / unmarshall msgData and execute logic based on the response
+    // unmarshall msgData and execute logic based on the response
 }
 }
 ```
@@ -353,7 +353,7 @@ See the following `git diff` for more details:
 type TestingApp interface {
    abci.Application
 
-   / ibc-go additions
+   // ibc-go additions
    GetBaseApp() *baseapp.BaseApp
 -  GetStakingKeeper() stakingkeeper.Keeper
 +  GetStakingKeeper() ibctestingtypes.StakingKeeper
@@ -361,10 +361,10 @@ type TestingApp interface {
    GetScopedIBCKeeper() capabilitykeeper.ScopedKeeper
    GetTxConfig() client.TxConfig
 
-   / Implemented by SimApp
+   // Implemented by SimApp
    AppCodec() codec.Codec
 
-   / Implemented by BaseApp
+   // Implemented by BaseApp
 -  LastCommitID() sdk.CommitID
 +  LastCommitID() storetypes.CommitID
    LastBlockHeight() int64

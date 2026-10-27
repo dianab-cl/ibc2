@@ -15,13 +15,13 @@ In order to be wired with the new StackBuilder primitive, applications and middl
 IBC Applications must implement a new `SetICS4Wrapper` which will set the `ICS4Wrapper` through which the application will call `SendPacket` and `WriteAcknowledgement`. It is recommended that IBC applications are initialized first with the IBC ChannelKeeper directly, and then modified with a middleware ICS4Wrapper during the stack wiring.
 
 ```go
-/ SetICS4Wrapper sets the ICS4Wrapper. This function may be used after
-/ the module's initialization to set the middleware which is above this
-/ module in the IBC application stack.
-/ The ICS4Wrapper **must** be used for sending packets and writing acknowledgements
-/ to ensure that the middleware can intercept and process these calls.
-/ Do not use the channel keeper directly to send packets or write acknowledgements
-/ as this will bypass the middleware.
+// SetICS4Wrapper sets the ICS4Wrapper. This function may be used after
+// the module's initialization to set the middleware which is above this
+// module in the IBC application stack.
+// The ICS4Wrapper **must** be used for sending packets and writing acknowledgements
+// to ensure that the middleware can intercept and process these calls.
+// Do not use the channel keeper directly to send packets or write acknowledgements
+// as this will bypass the middleware.
 SetICS4Wrapper(wrapper ICS4Wrapper)
 ```
 
@@ -38,16 +38,16 @@ type IBCModule struct {
     keeper *keeper.Keeper
 }
 
-/ NewIBCModule creates a new IBCModule given the keeper
+// NewIBCModule creates a new IBCModule given the keeper
 func NewIBCModule(k *keeper.Keeper) *IBCModule {
     return &IBCModule{
     keeper: k,
 }
 }
 
-/ SetICS4Wrapper sets the ICS4Wrapper. This function may be used after
-/ the module's initialization to set the middleware which is above this
-/ module in the IBC application stack.
+// SetICS4Wrapper sets the ICS4Wrapper. This function may be used after
+// the module's initialization to set the middleware which is above this
+// module in the IBC application stack.
 func (im IBCModule)
 
 SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
@@ -58,24 +58,24 @@ SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
 im.keeper.WithICS4Wrapper(wrapper)
 }
 
-/ Keeper file that has ICS4Wrapper internal to its own struct
+// Keeper file that has ICS4Wrapper internal to its own struct
 
-/ Keeper defines the IBC fungible transfer keeper
+// Keeper defines the IBC fungible transfer keeper
 type Keeper struct {
 	...
 	ics4Wrapper   porttypes.ICS4Wrapper
 
-    / Keeper is initialized with ICS4Wrapper
-    / being equal to the top-level channelKeeper
-    / this can be changed by calling WithICS4Wrapper
-    / with a different middleware ICS4Wrapper
+    // Keeper is initialized with ICS4Wrapper
+    // being equal to the top-level channelKeeper
+    // this can be changed by calling WithICS4Wrapper
+    // with a different middleware ICS4Wrapper
 	channelKeeper types.ChannelKeeper
 	...
 }
 
-/ WithICS4Wrapper sets the ICS4Wrapper. This function may be used after
-/ the keepers creation to set the middleware which is above this module
-/ in the IBC application stack.
+// WithICS4Wrapper sets the ICS4Wrapper. This function may be used after
+// the keepers creation to set the middleware which is above this module
+// in the IBC application stack.
 func (k *Keeper)
 
 WithICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
@@ -90,8 +90,8 @@ Since Middleware is itself implement the IBC application interface, it must also
 Additionally, IBC Middleware has an underlying IBC application that it calls into as well. Previously this application would be set in the middleware upon construction. With the stack builder primitive, the application is only set during upon calling `stack.Build()`. Thus, middleware is additionally responsible for implementing the new method: `SetUnderlyingApplication`:
 
 ```go
-/ SetUnderlyingModule sets the underlying IBC module. This function may be used after
-/ the middleware's initialization to set the ibc module which is below this middleware.
+// SetUnderlyingModule sets the underlying IBC module. This function may be used after
+// the middleware's initialization to set the ibc module which is below this middleware.
 SetUnderlyingApplication(IBCModule)
 ```
 
@@ -100,22 +100,22 @@ The initialization should not include the ICS4Wrapper and application as this ge
 Below is an example middleware setup:
 
 ```go expandable
-/ IBCMiddleware implements the ICS26 callbacks
+// IBCMiddleware implements the ICS26 callbacks
 type IBCMiddleware struct {
     app         porttypes.PacketUnmarshalerModule
 	ics4Wrapper porttypes.ICS4Wrapper
 
-    / this is a stateful middleware with its own internal keeper
+    // this is a stateful middleware with its own internal keeper
 	mwKeeper *keeper.MiddlewareKeeper
 
-	/ this is a middleware specific field
+	// this is a middleware specific field
 	mwField any
 }
 
-/ NewIBCMiddleware creates a new IBCMiddleware given the keeper and underlying application.
-/ NOTE: It **must** return a pointer reference so it can be
-/ modified in place by the stack builder
-/ NOTE: We do not pass in the underlying app and ICS4Wrapper here as this happens later
+// NewIBCMiddleware creates a new IBCMiddleware given the keeper and underlying application.
+// NOTE: It **must** return a pointer reference so it can be
+// modified in place by the stack builder
+// NOTE: We do not pass in the underlying app and ICS4Wrapper here as this happens later
 func NewIBCMiddleware(
 	mwKeeper *keeper.MiddlewareKeeper, mwField any,
 ) *IBCMiddleware {
@@ -125,9 +125,9 @@ func NewIBCMiddleware(
 }
 }
 
-/ SetICS4Wrapper sets the ICS4Wrapper. This function may be used after the
-/ middleware's creation to set the middleware which is above this module in
-/ the IBC application stack.
+// SetICS4Wrapper sets the ICS4Wrapper. This function may be used after the
+// middleware's creation to set the middleware which is above this module in
+// the IBC application stack.
 func (im *IBCMiddleware)
 
 SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
@@ -138,8 +138,8 @@ SetICS4Wrapper(wrapper porttypes.ICS4Wrapper) {
 im.mwKeeper.WithICS4Wrapper(wrapper)
 }
 
-/ SetUnderlyingApplication sets the underlying IBC module. This function may be used after
-/ the middleware's creation to set the ibc module which is below this middleware.
+// SetUnderlyingApplication sets the underlying IBC module. This function may be used after
+// the middleware's creation to set the ibc module which is below this middleware.
 func (im *IBCMiddleware)
 
 SetUnderlyingApplication(app porttypes.IBCModule) {
